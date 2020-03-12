@@ -1,26 +1,53 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import UserForm from './userForm';
+import ResultScreen from './result';
+// import withGoogleApps from "./googlecale";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom';
+
+class App extends React.Component {
+  // withGoogleApps(App);
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      formData: {
+        startDate: '',
+        endDate: '',
+        googleLink: '',
+        swimming: false,
+        cifGym: false,
+        pacGym: false,
+        badminton: false,
+        basketball: false,
+        skating: false,
+        studio: false,
+        fieldHouse: false,
+        avgHrsPerWk: 0,
+        limit1Activity: false,
+      },
+    };
+  };
+
+  handleFormSubmit = (userData) => {
+    this.setState({ formData: {...userData} });
+  };
+
+  render() {
+    console.log('formdata is ', this.state.formData);
+    return (
+      <Router>
+        <Route exact path="/" render={(props) => <UserForm {...props} handleFormSubmit={this.handleFormSubmit} />} />
+        <Route exact path="/result" render={(props) => <ResultScreen {...props} formData={this.state.formData} />} />
+        {/* <Route exact path="/result" component={ResultScreen} /> */}
+      </Router>
+    );
+  }
+
 }
 
 export default App;
