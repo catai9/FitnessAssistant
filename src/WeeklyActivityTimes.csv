@@ -1,0 +1,122 @@
+Sport ,Day,Open Time,Close Time,Location ,Building 
+Workout,Monday,6:30,23:59,Warrior Zone,PAC
+Studio,Monday,6:30,9:00,PAC Studio 1,PAC
+Basketball,Monday,7:00,17:30,PAC Main,PAC
+Badminton,Monday,7:00,17:00,CIF Gym 1,CIF
+Basketball,Monday,7:00,16:30,CIF Gym 3,CIF
+Basketball,Monday,7:00,16:00,CIF Gym 2,CIF
+Badminton,Monday,7:00,15:00,PAC Small,PAC
+Field House,Monday,9:00,23:59,Indoor Field A,CIF
+Field House,Monday,9:00,15:30,Indoor Field B,CIF
+Field House,Monday,9:00,15:30,Indoor Field C,CIF
+Studio,Monday,11:00,12:00,PAC Studio 1,PAC
+Skate,Monday,11:00,12:00,CIF Arena,CIF
+Studio,Monday,14:30,16:00,PAC Studio 1,PAC
+Badminton,Monday,18:00,19:30,PAC Small,PAC
+Studio,Monday,23:00,23:59,PAC Studio 1,PAC
+Workout,Tuesday,6:30,23:59,Warrior Zone,PAC
+Studio,Tuesday,6:30,9:00,PAC Studio 1,PAC
+Basketball,Tuesday,7:00,19:00,PAC Main,PAC
+Badminton,Tuesday,7:00,15:30,PAC Small,PAC
+Basketball,Tuesday,7:00,11:30,CIF Gym 3,CIF
+Field House,Tuesday,9:00,23:59,Indoor Field A,CIF
+Field House,Tuesday,9:00,11:00,Indoor Field B,CIF
+Field House,Tuesday,9:00,11:30,Indoor Field C,CIF
+Badminton,Tuesday,9:30,23:59,CIF Gym 1,CIF
+Basketball,Tuesday,9:30,11:30,CIF Gym 2,CIF
+Studio,Tuesday,10:00,16:00,PAC Studio 1,PAC
+Field House,Tuesday,13:00,14:30,Indoor Field B,CIF
+Basketball,Tuesday,13:30,15:30,CIF Gym 2,CIF
+Skate,Tuesday,14:00,15:30,CIF Arena,CIF
+Basketball,Tuesday,16:30,17:30,CIF Gym 3,CIF
+Badminton,Tuesday,19:30,21:30,PAC Small,PAC
+Basketball,Tuesday,22:00,23:59,CIF Gym 2,CIF
+Workout,Wednesday,6:30,23:59,Warrior Zone,PAC
+Studio,Wednesday,6:30,8:30,PAC Studio 1,PAC
+Basketball,Wednesday,7:00,22:00,PAC Main,PAC
+Badminton,Wednesday,7:00,21:00,CIF Gym 1,CIF
+Basketball,Wednesday,7:00,17:30,CIF Gym 2,CIF
+Badminton,Wednesday,7:00,17:30,PAC Small,PAC
+Basketball,Wednesday,7:00,22:30,CIF Gym 3,CIF
+Warrior Field ,Wednesday,8:00,19:00,CIF Warrior,CIF
+Field House,Wednesday,9:00,23:59,Indoor Field A,CIF
+Field House,Wednesday,9:00,15:30,Indoor Field B,CIF
+Studio ,Wednesday,9:30,16:00,PAC Studio 1,PAC
+Skate,Wednesday,12:00,13:30,CIF Arena,CIF
+Field House,Wednesday,13:30,15:30,Indoor Field C,CIF
+Basketball,Wednesday,19:30,21:00,CIF Gym 2,CIF
+Workout,Thursday,6:30,23:59,Warrior Zone,PAC
+Studio,Thursday,6:30,9:00,PAC Studio 1,PAC
+Basketball,Thursday,7:00,23:59,CIF Gym 2,CIF
+Badminton,Thursday,7:00,20:00,CIF Gym 1,CIF
+Basketball,Thursday,7:00,17:30,PAC Main,PAC
+Badminton,Thursday,7:00,15:30,PAC Small,PAC
+Basketball,Thursday,7:00,11:30,CIF Gym 3,CIF
+Field House,Thursday,8:00,23:59,Indoor Field A,CIF
+Warrior Field ,Thursday,8:00,19:00,CIF Warrior,CIF
+Field House,Thursday,9:00,11:30,Indoor Field C,CIF
+Field House,Thursday,9:00,11:30,Indoor Field B,CIF
+Skate,Thursday,11:00,12:00,CIF Arena,CIF
+Studio,Thursday,13:00,16:00,PAC Studio 1,PAC
+Basketball,Thursday,13:30,16:00,CIF Gym 3,CIF
+Badminton,Thursday,18:30,19:30,PAC Small,PAC
+Basketball,Thursday,21:00,23:59,CIF Gym 3,CIF
+Workout,Friday,6:30,23:59,Warrior Zone,PAC
+Studio,Friday,6:30,9:00,PAC Studio 1,PAC
+Basketball,Friday,7:00,23:59,PAC Main,PAC
+Badminton,Friday,7:00,23:59,PAC Small,PAC
+Basketball,Friday,7:00,14:30,CIF Gym 2,CIF
+Badminton,Friday,7:00,14:30,CIF Gym 1,CIF
+Warrior Field ,Friday,8:00,19:00,CIF Warrior,CIF
+Field House,Friday,9:00,23:59,Indoor Field A,CIF
+Basketball,Friday,9:00,20:30,CIF Gym 3,CIF
+Field House,Friday,9:00,13:30,Indoor Field B,CIF
+Studio,Friday,11:00,15:00,PAC Studio 1,PAC
+Skate,Friday,11:00,12:00,CIF Arena,CIF
+Field House,Friday,11:30,16:00,Indoor Field C,CIF
+Studio,Friday,18:00,19:00,PAC Studio 1,PAC
+Studio,Friday,22:00,23:59,PAC Studio 1,PAC
+CIF Fitness,Saturday,9:00,22:30,CIF Fitness,CIF
+Warrior Field ,Saturday,9:00,19:00,CIF Warrior,CIF
+Studio,Saturday,9:00,11:00,PAC Studio 1,PAC
+Workout,Saturday,9:00,22:30,Warrior Zone,PAC
+Field House,Saturday,9:30,22:00,Indoor Field A,CIF
+Badminton,Saturday,9:30,12:30,PAC Small,PAC
+Studio,Saturday,14:00,15:00,PAC Studio 1,PAC
+Badminton,Saturday,15:30,22:00,PAC Small,PAC
+Basketball,Saturday,16:30,22:00,CIF Gym 3,CIF
+Studio,Saturday,17:00,20:00,PAC Studio 1,PAC
+Basketball,Saturday,19:30,22:00,PAC Main,PAC
+CIF Fitness,Sunday,9:00,23:59,CIF Fitness,CIF
+Warrior Field ,Sunday,9:00,19:00,CIF Warrior,CIF
+Studio,Sunday,9:00,15:00,PAC Studio 1,PAC
+Workout,Sunday,9:00,23:59,Warrior Zone,PAC
+Badminton,Sunday,9:30,22:30,PAC Small,PAC
+Basketball,Sunday,9:30,14:00,CIF Gym 2,CIF
+Badminton,Sunday,9:30,14:00,CIF Gym 1,CIF
+Basketball,Sunday,9:30,12:00,PAC Main,PAC
+Field House,Sunday,13:00,21:00,Indoor Field A,CIF
+Basketball,Sunday,16:00,19:30,CIF Gym 3,CIF
+Studio,Sunday,19:00,23:59,PAC Studio 1,PAC
+Swim,Monday,8:00,9:00,PAC Pool,PAC
+Swim,Monday,12:00,13:00,PAC Pool,PAC
+Swim,Monday,15:00,16:00,PAC Pool,PAC
+Swim,Monday,21:30,22:30,PAC Pool,PAC
+Swim,Tuesday,8:00,9:00,PAC Pool,PAC
+Swim,Tuesday,12:00,13:00,PAC Pool,PAC
+Swim,Tuesday,15:00,16:00,PAC Pool,PAC
+Swim,Tuesday,21:30,22:30,PAC Pool,PAC
+Swim,Wednesday,8:00,9:00,PAC Pool,PAC
+Swim,Wednesday,12:00,13:00,PAC Pool,PAC
+Swim,Wednesday,15:00,16:00,PAC Pool,PAC
+Swim,Wednesday,21:30,22:30,PAC Pool,PAC
+Swim,Thursday,8:00,9:00,PAC Pool,PAC
+Swim,Thursday,12:00,13:00,PAC Pool,PAC
+Swim,Thursday,15:00,16:00,PAC Pool,PAC
+Swim,Thursday,21:30,22:30,PAC Pool,PAC
+Swim,Friday,8:00,9:00,PAC Pool,PAC
+Swim,Friday,12:00,13:00,PAC Pool,PAC
+Swim,Friday,15:00,16:00,PAC Pool,PAC
+Swim,Friday,21:30,22:30,PAC Pool,PAC
+Swim,Saturday,14:00,16:00,PAC Pool,PAC
+Swim,Sunday,14:00,16:00,PAC Pool,PAC

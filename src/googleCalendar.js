@@ -15,6 +15,14 @@ export default class DoubleButton extends React.Component {
         }
     }
 
+    readEvents(){
+        if (ApiCalendar.sign)
+        ApiCalendar.listUpcomingEvents(10)
+          .then(({result}) => {
+            console.log(result.items);
+          });
+    }
+
     render() {
         return (
             <div>
@@ -28,11 +36,8 @@ export default class DoubleButton extends React.Component {
                 >
                     sign-out
               </button>
-                {ApiCalendar.sign &&
-                    ApiCalendar.listUpcomingEvents(10)
-                        .then(({ result }) => {
-                            console.log(result.items);
-                        })}
+
+               
             </div>
 
         );

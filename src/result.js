@@ -1,5 +1,7 @@
 import React from 'react';
 import DoubleButton from './googleCalendar'
+import StatusSign from './signIn'
+import Reader from './CSVReader'
 
 class ResultScreen extends React.Component {
     constructor(props) {
@@ -15,13 +17,17 @@ class ResultScreen extends React.Component {
         // });
     }
 
-    getUserAvailability() {
-
+    getSportAvailability() {
 
     }
+
     render() {
         return (
-            <DoubleButton/>
+            <React.Fragment>
+                <StatusSign />
+                <DoubleButton />
+                <Reader />
+            </React.Fragment>
         );
     }
 }

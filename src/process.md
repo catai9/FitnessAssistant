@@ -24,3 +24,4 @@ Save the user inputted values for these user values.
 
 
 * Figure out how long API keys can last for
+* All of the user's events need to be on one calendar (their primary calendar).

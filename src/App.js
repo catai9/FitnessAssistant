@@ -38,7 +38,6 @@ class App extends React.Component {
   };
 
   render() {
-    console.log('formdata is ', this.state.formData);
     return (
       <Router>
         <Route exact path="/" render={(props) => <UserForm {...props} handleFormSubmit={this.handleFormSubmit} />} />
