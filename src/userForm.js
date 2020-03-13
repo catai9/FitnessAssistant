@@ -34,6 +34,13 @@ class UserForm extends React.Component {
         this.setState({userForm: userForm});
     }
 
+    /* NEED TO FINISH: PSEDUOCODE BELOW */
+    formValidation(){
+        // Check that start Date is equal to or after the first day of the current term.
+        // Check that end Date is equal to or before the last day of the current term.  
+
+    }
+
     handleCheckedChange(event) {
         const name = event.target.name
         var userForm = this.state.userForm;
@@ -41,11 +48,18 @@ class UserForm extends React.Component {
         this.setState({userForm: userForm});
     }
 
+    /* NEED TO FINISH: PSEDUOCODE BELOW */
+    // Check if form is filled out correctly before submitting form.
     handleSubmit() {
-        this.props.handleFormSubmit(this.state.userForm);
-        this.setState({ isSubmitted: true });
+        if(this.isFormFilledOutProperly()){
+            this.props.handleFormSubmit(this.state.userForm);
+            this.setState({ isSubmitted: true });
+        } else {
+            // Do not submit form.
+        }
     }
 
+    /* NEED TO FINISH: Add Info buttons next to specific sports to give more info. */
     render() {
         var {userForm} = this.state;
         return (
@@ -141,6 +155,7 @@ class UserForm extends React.Component {
                     Field House
                 </label> <br />
                 <br />
+                {/* NEED TO FINISH Submit button can only be submitted if the user filled out all parts of the form. */}
                 <input type="submit" />
 
                 {this.state.isSubmitted &&

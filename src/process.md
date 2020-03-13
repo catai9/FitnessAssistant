@@ -30,3 +30,4 @@ Save the user inputted values for these user values.
 * Group by compares substrings. Right now, only group by the whole sport name.
 * Assume each sport does not last longer than 1 day.
 * Timezones
+* Removed the API key on GitHub

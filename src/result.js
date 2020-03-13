@@ -30,6 +30,7 @@ class ResultScreen extends React.Component {
             showModal: false
         };
         this.handleOpenModal = this.handleOpenModal.bind(this);
+        this.handleCloseModal = this.handleCloseModal.bind(this);
         this.handleAddModal = this.handleAddModal.bind(this);
     }
 
@@ -100,6 +101,7 @@ class ResultScreen extends React.Component {
     }
 
     /* NEED TO FINISH: PSEDUOCODE BELOW */
+    // If the user clicks the garbage can next to the header, then loop through all of the tags and remove them.
     showBookedSportEvent() {
         this.setBookedSportEvents();
         let sportGroupedArray = this.state.bookedSportEvents;
@@ -180,6 +182,10 @@ class ResultScreen extends React.Component {
     }
 
     handleAddModal() {
+        this.handleCloseModal();
+    }
+
+    handleCloseModal() {
         this.setState({ showModal: false });
     }
 
@@ -189,7 +195,10 @@ class ResultScreen extends React.Component {
             <ReactModal
                 isOpen={this.state.showModal}
             >
+                {/* LOW PRIORITY: Check that at least one event selected, else grey out button. */}
                 <button onClick={this.handleAddModal}>Add Events</button>
+                {/* Show button that allows user to exit without adding anything. */}
+                <button onClick={this.handleCloseModal}>Close</button>
             </ReactModal>
             /* Print out the sport name using h1 tags
                 Print out the location next to the sport name using h1 tags
@@ -215,7 +224,14 @@ class ResultScreen extends React.Component {
                     On click of Add, loop through each element in list.
                         // For each li element in the list.
                             // If the checkbox is checked
-                                // Call the addEvent(sportName, location, date, startTime, endTime)
+                                // Allow user to change the start and end times (values can be changed).
+                                    // Before submitting, check the start and end (user changed values).
+                                    // Check that start >= startTime && start <= endTime.
+                                    // Check that end <= endTime && end >= startTime
+                                        // Call the addEvent(sportName, location, date, startTime, endTime)
+                                    // Else if checks do not pass
+                                        // Show an alert that start and end must be in the range of the available time.
+                        
             */
         )
     }
@@ -237,11 +253,14 @@ class ResultScreen extends React.Component {
         return (
             <div>
                 {/* For each option in recommendActivities 
-                        Show button to call a method (showFitnessPopup) to open up a popup. Pass in the option as a parameter to this popup.
-                        Print out the sport name using h1 tags
-                        Print out the location next to the sport name using h1 tags
-                        Print out the day of the week using h1 tags.
-                        Print out the start and end times using h1 tags.
+                        If they have at least 1 date with a booked value of 0 (i.e. one date that can be booked.)
+                            Show button to call a method (showFitnessPopup) to open up a popup. Pass in the option as a parameter to this popup.
+                            Print out the sport name using h1 tags
+                            Print out the location next to the sport name using h1 tags
+                            Print out the day of the week using h1 tags.
+                            Print out the start and end times using h1 tags.
+                        Else (no dates are available for that activity; ex. they all conflict)
+                            Do not show
                 */}
                 {Object.keys(recommendActivities).forEach((option) => {
                     return (<button onClick={this.handleOpenModal(option)}>Show More</button>)
