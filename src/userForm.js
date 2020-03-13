@@ -8,7 +8,6 @@ class UserForm extends React.Component {
             userForm: {
                 startDate: '',
                 endDate: '',
-                googleLink: '',
                 swimming: false,
                 cifGym: false,
                 pacGym: false,
@@ -55,19 +54,15 @@ class UserForm extends React.Component {
                 <p>Input the following: </p>
 
                 <label>Start Date:</label>
-                <input name="startDate" type="text" value={userForm.startDate} onChange={this.handleChange} />
+                <input name="startDate" type="date" value={userForm.startDate} onChange={this.handleChange} />
                 <br /><br />
 
                 <label>End Date:</label>
-                <input name="endDate" type="text" value={userForm.endDate} onChange={this.handleChange} />
-                <br /><br />
-
-                <label>Google Link:</label>
-                <input name="googleLink" type="text" value={userForm.googleLink} onChange={this.handleChange} />
+                <input name="endDate" type="date" value={userForm.endDate} onChange={this.handleChange} />
                 <br /><br />
 
                 <label>Average hrs/wk:</label>
-                <input name="avgHrsPerWk" type="text" value={userForm.avgHrsPerWk} onChange={this.handleChange} />
+                <input name="avgHrsPerWk" type="number" value={userForm.avgHrsPerWk} onChange={this.handleChange} />
                 <br /> <br />
 
                 <label>

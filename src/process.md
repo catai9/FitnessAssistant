@@ -25,3 +25,8 @@ Save the user inputted values for these user values.
 
 * Figure out how long API keys can last for
 * All of the user's events need to be on one calendar (their primary calendar).
+* Only shows events named with the sport name (using this system) for the sports that this system supports.
+* May need to npm install -save packages. (lodash, d3, etc. - go thru imports)
+* Group by compares substrings. Right now, only group by the whole sport name.
+* Assume each sport does not last longer than 1 day.
+* Timezones

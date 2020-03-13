@@ -1,45 +1,58 @@
 import React, { ReactNode, SyntheticEvent } from 'react';
 import ApiCalendar from 'react-google-calendar-api';
 
-export default class DoubleButton extends React.Component {
+export default class SignInButton extends React.Component {
     constructor(props) {
         super(props);
-        this.handleItemClick = this.handleItemClick.bind(this);
-    }
+        this.state = {
+            bookedEvents: [],
+            isSignedIn: ApiCalendar.sign,
 
-    handleItemClick(event, name) {
-        if (name === 'sign-in') {
-            ApiCalendar.handleAuthClick();
-        } else if (name === 'sign-out') {
-            ApiCalendar.handleSignoutClick();
+        }
+        this.signUpdate = this.signUpdate.bind(this);
+        ApiCalendar.onLoad(() => {
+            ApiCalendar.listenSign(this.signUpdate);
+        });
+    }
+    
+    // Get and pass the items to their proper array.
+    getEvents(){
+        if (this.state.isSignedIn){
+            ApiCalendar.listUpcomingEvents()
+            .then(({ result }) => {
+                this.props.handleUserBusy(result.items);
+            });
+            this.props.setSignedIn();
         }
     }
 
-    readEvents(){
-        if (ApiCalendar.sign)
-        ApiCalendar.listUpcomingEvents(10)
-          .then(({result}) => {
-            console.log(result.items);
-          });
+    // Updates the sign in flag variable once the user has signed in.
+    signUpdate(isSignedIn) {
+        this.setState({
+            isSignedIn
+        }, () => this.getEvents())
+        
     }
 
+    // Screen to prompt user to sign in to their Google Account.
+    signIn() {
+        return (
+            <div>
+                Please sign in and allow access to your Google calendar
+                <br />
+                <button onClick={(e) => ApiCalendar.handleAuthClick()}>
+                    Sign In
+              </button>
+            </div>
+        )
+    }
+
+    // Renders the Google Sign in page if user not signed in. 
     render() {
         return (
             <div>
-                <button
-                    onClick={(e) => this.handleItemClick(e, 'sign-in')}
-                >
-                    sign-in
-              </button>
-                <button
-                    onClick={(e) => this.handleItemClick(e, 'sign-out')}
-                >
-                    sign-out
-              </button>
-
-               
+                {!this.state.isSignedIn && this.signIn()}
             </div>
-
         );
     }
 }

@@ -23,6 +23,7 @@ export default class StatusSign extends React.Component {
     }
 
     signUpdate(sign) {
+        console.log('test')
         this.setState({
             sign
         }, () => this.getEvents())
