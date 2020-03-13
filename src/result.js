@@ -112,7 +112,8 @@ class ResultScreen extends React.Component {
                             Print out the location next to the sport name using h1 tags
                             Show a ul tag (so the list appears as bullet points)
                                 For each event in sportGroupedArray[sport][location]
-                                    list that event start & end date using li tags 
+                                    Show a clickable button. On click, it will call a method to allow the user to delete that event from their calendar.
+                                    List that event start & end date using li tags 
                             Show the end of the ul tag.
                 */}
             </div>
