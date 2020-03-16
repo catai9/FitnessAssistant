@@ -34,22 +34,6 @@ class ResultScreen extends React.Component {
         this.handleAddModal = this.handleAddModal.bind(this);
     }
 
-    // When the component mounts, calls the local Excel files and stores the data.
-    componentDidMount() {
-        // Read in and store the available sport activity events from the Excel file in an array.
-        d3.csv(data).then((data) => {
-            this.setState({ sportAvailableTimes: data });
-        }).catch(function (err) {
-            throw err;
-        });
-        // Read in and store the facility closure dates from the Excel file in an array.
-        d3.csv(facilityClosedData).then((facilityClosedData) => {
-            this.setState({ facilityClosed: facilityClosedData });
-        }).catch(function (err) {
-            throw err;
-        })
-    }
-
     // Stores the user's booked events in this component's state variable.
     handleUserBusy = (bookedTimes) => {
         this.setState({ bookedEvents: bookedTimes },
@@ -99,26 +83,42 @@ class ResultScreen extends React.Component {
         }
     }
 
-    /* NEED TO FINISH: PSEDUOCODE BELOW */
+    /* NEED TO FINISH: DELETION OF EVENT FROM GOOGLE CALENDAR */
     // If the user clicks the garbage can next to the header, then loop through all of the tags and remove them.
     showBookedSportEvent() {
-        this.setBookedSportEvents();
-        let sportGroupedArray = this.state.bookedSportEvents;
+        // Calls the set function if the object is empty just in case.
+        if(Object.keys(this.state.bookedSportEvents).length <= 0){
+            this.setBookedSportEvents();
+        }
 
-        console.log('sport grouped array ', sportGroupedArray);
+        let sportGrouped = this.state.bookedSportEvents;
+        var rows = [];
+
+        // For each sport in sportGrouped Array
+        Object.keys(sportGrouped).forEach((sport) => {
+            // For each location in sportGroupedArray[sport]
+            Object.keys(sportGrouped[sport]).forEach((location)=>{
+                // Print out the sport name using h1 tags
+                // Print out the location next to the sport name using h1 tags
+                rows.push(<h2>{sport} {location}</h2>);
+                
+                sportGrouped[sport][location].forEach((event) => {
+                    // Show a ul tag (so the list appears as bullet points)
+                    //         For each event in sportGroupedArray[sport][location]
+                    //         Show a clickable button. On click, it will call a method to allow the user to delete that event from their calendar.
+                    //         List that event start & end date using li tags 
+                    // Show the end of the ul tag.
+                    rows.push(<ul><li>
+                        <button>Delete</button>
+                        {event.start} to {event.end}</li>
+                        </ul>)
+                });
+            });
+        })
 
         return (
             <div>
-                {/* For each sport in sportGrouped Array
-                        For each location in sportGroupedArray[sport]
-                            Print out the sport name using h1 tags
-                            Print out the location next to the sport name using h1 tags
-                            Show a ul tag (so the list appears as bullet points)
-                                For each event in sportGroupedArray[sport][location]
-                                    Show a clickable button. On click, it will call a method to allow the user to delete that event from their calendar.
-                                    List that event start & end date using li tags 
-                            Show the end of the ul tag.
-                */}
+                {rows}
             </div>
         )
     }
@@ -131,15 +131,35 @@ class ResultScreen extends React.Component {
 
     /* NEED TO FINISH: PSEDUOCODE BELOW */
     getUserFitnessOptions() {
+        // Read in and store the available sport activity events from the Excel file in an array.
         // All the fitness options have been read in and stored in this array: sportAvailableTimes.
         // All the facility closure dates have been read in and stored in this array: facilityClosed.
+        d3.csv(data).then((data) => {
+            this.setState({ sportAvailableTimes: data });
+        }).catch(function (err) {
+            throw err;
+        });
+        
+        // Read in and store the facility closure dates from the Excel file in an array.
+        d3.csv(facilityClosedData).then((facilityClosedData) => {
+            this.setState({ facilityClosed: facilityClosedData });
+        }).catch(function (err) {
+            throw err;
+        })
 
         // Create a variable named sportOptionDates to keep track of the sport option and its possible dates + category. 
         // Key: option (includes sport name, location, day of the week, and time).
         // Value: categorizedDates (includes possible dates and its associated date category (0, 1, 2)).
+        let sportOptionDates = {};
 
         // For each option in sportAvailableTimes.
-        // Check if the user checked off the sport (if not checked, go to next option).
+        this.state.sportAvailableTimes.forEach((entry) => {
+            // Check if the user checked off the sport (if not checked, go to next option).
+            console.log(entry["Sport"]);
+
+
+        })
+        
         // Find the first date after the starting date that is the same day of the week as the sport using a while loop.
         // Set currDate = firstDate 
         // Create a variable named optionDates to keep track of the dates for this option. 
@@ -294,7 +314,9 @@ class ResultScreen extends React.Component {
         return (
             <div>
                 {this.showAvgHrs()}
+                <h1>Booked Sport Events</h1>
                 {this.showBookedSportEvent()}
+                <h1>Possible Fitness Options</h1>
                 {this.showFitnessOptions()}
             </div>
         )
