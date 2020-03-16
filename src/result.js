@@ -66,38 +66,37 @@ class ResultScreen extends React.Component {
 
     // Display booked sport events.
     setBookedSportEvents() {
-        let eventArray = [];
+        let sportEvents = [];
         // Check if event name is one of the sports in the array.
         this.state.bookedEvents.forEach((event) => {
             let summary = event.summary;
             // Only shows events made using our system (with name of sport).
             this.state.sports.forEach((sport) => {
                 if (summary.includes(sport)) {
-                    eventArray.push(event);
+                    sportEvents.push(event);
                 }
             });
-        })
-        // Only sets the state if the array is not empty.
-        eventArray.length > 0 && this.setState({ bookedSportEvents: eventArray });
+        });
 
         // First group by sport.
-        let sportGroupedArray = _.groupBy(this.state.bookedSportEvents, 'summary');
+        let sportGrouped = _.groupBy(sportEvents, 'summary');
 
-        Object.keys(sportGroupedArray).forEach((key) => {
+        Object.keys(sportGrouped).forEach((key) => {
             // Then group by location.
-            sportGroupedArray[key] = _.groupBy(sportGroupedArray[key], "location");
+            sportGrouped[key] = _.groupBy(sportGrouped[key], "location");
             // Note: Do not need to read it in sorted as it comes in sorted. 
             // Transform date in place using moment.js.
-            Object.keys(sportGroupedArray[key]).forEach((location) => {
-                sportGroupedArray[key][location].forEach((event) => {
+            Object.keys(sportGrouped[key]).forEach((location) => {
+                sportGrouped[key][location].forEach((event) => {
                     event.start = this.transformDate(event.start);
                     event.end = this.transformDate(event.end);
-                })
-            })
-        })
+                });
+            });
+        });
         // Only sets the state if the object is not empty.
-        sportGroupedArray.length > 0 && this.setState({ bookedSportEvents: sportGroupedArray });
-        console.log('sportGrouped Array', sportGroupedArray);
+        if(Object.keys(sportGrouped).length > 0){
+            this.setState(Object.assign(this.state.bookedSportEvents,sportGrouped));
+        }
     }
 
     /* NEED TO FINISH: PSEDUOCODE BELOW */
@@ -105,6 +104,8 @@ class ResultScreen extends React.Component {
     showBookedSportEvent() {
         this.setBookedSportEvents();
         let sportGroupedArray = this.state.bookedSportEvents;
+
+        console.log('sport grouped array ', sportGroupedArray);
 
         return (
             <div>

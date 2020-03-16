@@ -1,5 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
+import moment from 'moment';
+
+const termStartDate = ('2020-01-06');
+const termEndDate = ('2020-04-03');
 
 class UserForm extends React.Component {
     constructor(props) {
@@ -34,11 +38,17 @@ class UserForm extends React.Component {
         this.setState({userForm: userForm});
     }
 
-    /* NEED TO FINISH: PSEDUOCODE BELOW */
-    formValidation(){
+    isFormFilledOutProperly(){
         // Check that start Date is equal to or after the first day of the current term.
         // Check that end Date is equal to or before the last day of the current term.  
+        var termStart = moment(termStartDate).format('YYYY-MM-DD');
+        var userStart = moment(this.state.userForm.startDate).format('YYYY-MM-DD');
+        var termEnd = moment(termEndDate).format('YYYY-MM-DD');
+        var userEnd = moment(this.state.userForm.endDate).format('YYYY-MM-DD');
 
+        return termStart <= userStart &&
+            userStart <= userEnd &&
+            termEnd >= userEnd;
     }
 
     handleCheckedChange(event) {
@@ -48,18 +58,19 @@ class UserForm extends React.Component {
         this.setState({userForm: userForm});
     }
 
-    /* NEED TO FINISH: PSEDUOCODE BELOW */
-    // Check if form is filled out correctly before submitting form.
     handleSubmit() {
+        // Check if form is filled out correctly before submitting form.
         if(this.isFormFilledOutProperly()){
             this.props.handleFormSubmit(this.state.userForm);
             this.setState({ isSubmitted: true });
         } else {
-            // Do not submit form.
+            // Do not submit form and provide a message to the user.
+            alert("Please make sure that your start and end date are within the term start and end dates ("+
+                 termStartDate+ " to "+ termEndDate+ ") AND make sure your end date is not before your start date.");
+            this.setState({ isSubmitted: false });
         }
     }
 
-    /* NEED TO FINISH: Add Info buttons next to specific sports to give more info. */
     render() {
         var {userForm} = this.state;
         return (
@@ -68,15 +79,15 @@ class UserForm extends React.Component {
                 <p>Input the following: </p>
 
                 <label>Start Date:</label>
-                <input name="startDate" type="date" value={userForm.startDate} onChange={this.handleChange} />
+                <input name="startDate" type="date" value={userForm.startDate} onChange={this.handleChange} required />
                 <br /><br />
 
                 <label>End Date:</label>
-                <input name="endDate" type="date" value={userForm.endDate} onChange={this.handleChange} />
+                <input name="endDate" type="date" value={userForm.endDate} onChange={this.handleChange} required />
                 <br /><br />
 
                 <label>Average hrs/wk:</label>
-                <input name="avgHrsPerWk" type="number" value={userForm.avgHrsPerWk} onChange={this.handleChange} />
+                <input name="avgHrsPerWk" type="number" value={userForm.avgHrsPerWk} onChange={this.handleChange} required />
                 <br /> <br />
 
                 <label>
@@ -90,6 +101,7 @@ class UserForm extends React.Component {
 
                 <label>Preferred Sports:</label>
                 <br />
+                <input type="checkbox" class="info-btn hidden" />
                 <label>
                     <input
                         name="swimming"
@@ -98,6 +110,10 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Swimming
                 </label> <br />
+                {/* Info buttons next to specific sports to give more info. */}
+                <div class="tooltip">i
+                    <span class="tooltiptext">The CIF gym is larger than the PAC and has more equipment.</span>
+                </div> 
                 <label>
                     <input
                         name="cifGym"
@@ -106,6 +122,9 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     CIF Gym
                 </label> <br />
+                <div class="tooltip">i
+                    <span class="tooltiptext">The PAC gym is located on the top floor and has less equipment than CIF.</span>
+                </div> 
                 <label>
                     <input
                         name="pacGym"
@@ -114,6 +133,7 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     PAC Gym
                 </label> <br />
+                <input type="checkbox" class="info-btn hidden" />
                 <label>
                     <input
                         name="badminton"
@@ -122,6 +142,7 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Badminton
                 </label> <br />
+                <input type="checkbox" class="info-btn hidden" />
                 <label>
                     <input
                         name="basketball"
@@ -130,6 +151,7 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Basketball
                 </label> <br />
+                <input type="checkbox" class="info-btn hidden" />
                 <label>
                     <input
                         name="skating"
@@ -138,6 +160,9 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Skating
                 </label> <br />
+                <div class="tooltip">i
+                    <span class="tooltiptext">The Studio hosts a variety of fitness and wellness classes including but not limited to Cycling, Pilates, Yoga and Zumba.</span>
+                </div>                
                 <label>
                     <input
                         name="studio"
@@ -146,6 +171,9 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Studio
                 </label> <br />
+                <div class="tooltip">i
+                    <span class="tooltiptext">The Field House can be used for drop-in recreation.</span>
+                </div> 
                 <label>
                     <input
                         name="fieldHouse"
@@ -155,7 +183,6 @@ class UserForm extends React.Component {
                     Field House
                 </label> <br />
                 <br />
-                {/* NEED TO FINISH Submit button can only be submitted if the user filled out all parts of the form. */}
                 <input type="submit" />
 
                 {this.state.isSubmitted &&

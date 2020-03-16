@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 import UserForm from './userForm';
 import ResultScreen from './result';
-// import withGoogleApps from "./googlecale";
 
 import {
   BrowserRouter as Router,
@@ -10,8 +9,6 @@ import {
 } from 'react-router-dom';
 
 class App extends React.Component {
-  // withGoogleApps(App);
-
   constructor(props) {
     super(props);
     this.state = {
