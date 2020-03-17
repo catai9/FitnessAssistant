@@ -6,22 +6,23 @@ input.hidden {
 .tooltip {
   position: relative;
   display: inline-block;
-  width: 1%;
-  margin-left: 0.1%;
+  width: 1.5%;
+  margin-left: 0.2%;
   text-align: center;
   border-radius: 50%;
   border-style: solid;
   text-align: center;
+  color: teal;
 }
 
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
+  width: 200px;
+  background-color: teal;
+  color: white;
+  text-align: left;
+  padding: 5px;
   border-radius: 6px;
  
   /* Position the tooltip text - see examples below! */
@@ -36,13 +37,84 @@ input.hidden {
 
 .blue {
   color: blue;
+  margin-left: 3%;
 }
 .red {
   color: red;
+  margin-left: 3%;
 }
 .black {
   color: black;
+  margin-left: 3%;
 }
 .orange {
   color: orange;
+  margin-left: 3%;
+}
+.noAdd {
+  margin-left: 6.5%;
+}
+
+button {
+  margin-right: 1%;
+}
+
+h1 {
+  font-family: sans-serif;
+  font-size: 70px;
+  text-align: center;
+}
+
+input[type=text],[type=password],[type=email], select, input[type=date], option, input[type=number] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit], .signInBtn {
+  /*By default, makes all the buttons pink. Else, colour-codes them to their respective option colours on the Home page.*/
+  width: 25%;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 auto;
+  display: block;
+  background-color: teal;
+}
+
+input[type=submit]:hover, .signInBtn:hover {
+  background-color: black;
+}
+
+.section {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px 50px 50px 50px;
+  font-size: 20px;
+  text-align: left;
+}
+h3, h4 {
+  text-align: left;
+}
+.sectionHead{
+  text-decoration: underline;
+}
+div.tooltip{
+  padding: 0 !important;
+}
+
+input[type=checkbox] {
+  width: 20px;
+  height: 20px;
+  margin-top: 1%;
+}
+.bookedList {
+  list-style: none;
 }

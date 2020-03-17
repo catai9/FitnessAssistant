@@ -74,125 +74,126 @@ class UserForm extends React.Component {
     render() {
         var { userForm } = this.state;
         return (
-            <form onSubmit={this.handleSubmit}>
-                <h1>UWaterloo Fitness Assistant</h1>
-                <h3>Note: For optimal performance, ensure that all your calendar events are located on your primary calendar.</h3>
+            <div className="section">
+                <form onSubmit={this.handleSubmit}>
+                    <h1>UWaterloo Fitness Assistant</h1>
+                    <h3>Please Note: </h3>
+                    <p>1. For optimal performance, please ensure that all your calendar events are located on your primary calendar.</p>
+                    <p>2. Please make sure that you are logged out of any Google accounts (delete cookies too).</p>
+                    <h3>Input the following: </h3>
 
-                <p>Input the following: </p>
+                    <label>Start Date:</label>
+                    <input name="startDate" type="date" value={userForm.startDate} onChange={this.handleChange} required />
+                    <br /><br />
 
-                <label>Start Date:</label>
-                <input name="startDate" type="date" value={userForm.startDate} onChange={this.handleChange} required />
-                <br /><br />
+                    <label>End Date:</label>
+                    <input name="endDate" type="date" value={userForm.endDate} onChange={this.handleChange} required />
+                    <br /><br />
 
-                <label>End Date:</label>
-                <input name="endDate" type="date" value={userForm.endDate} onChange={this.handleChange} required />
-                <br /><br />
+                    <label>Average Hrs/Week:</label>
+                    <input name="avgHrsPerWk" type="number" value={userForm.avgHrsPerWk} onChange={this.handleChange} required />
+                    <br />
 
-                <label>Average hrs/wk:</label>
-                <input name="avgHrsPerWk" type="number" value={userForm.avgHrsPerWk} onChange={this.handleChange} required />
-                <br /> <br />
-
-                <label>
-                    Limit 1 Activity Per Day
+                    <label>
+                        Limit 1 Activity Per Day:
                     <input
-                        name="limit1Activity"
-                        type="checkbox"
-                        checked={userForm.limit1Activity}
-                        onChange={this.handleCheckedChange} />
-                </label> <br /> <br />
+                            name="limit1Activity"
+                            type="checkbox"
+                            checked={userForm.limit1Activity}
+                            onChange={this.handleCheckedChange} />
+                    </label> <br /> <br />
 
-                <label>Preferred Sports:</label>
-                <br />
-                <input type="checkbox" className="info-btn hidden" />
-                <label>
-                    <input
-                        name="swimming"
-                        type="checkbox"
-                        checked={userForm.swimming}
-                        onChange={this.handleCheckedChange} />
+                    <label>Preferred Sports:</label>
+                    <br />
+                    <input type="checkbox" className="info-btn hidden" />
+                    <label>
+                        <input
+                            name="swimming"
+                            type="checkbox"
+                            checked={userForm.swimming}
+                            onChange={this.handleCheckedChange} />
                     Swimming
                 </label> <br />
-                {/* Info buttons next to specific sports to give more info. */}
-                <div className="tooltip">i
+                    {/* Info buttons next to specific sports to give more info. */}
+                    <div className="tooltip">i
                     <span className="tooltiptext">The CIF gym is larger than the PAC and has more equipment.</span>
-                </div>
-                <label>
-                    <input
-                        name="cifGym"
-                        type="checkbox"
-                        checked={userForm.cifGym}
-                        onChange={this.handleCheckedChange} />
+                    </div>
+                    <label>
+                        <input
+                            name="cifGym"
+                            type="checkbox"
+                            checked={userForm.cifGym}
+                            onChange={this.handleCheckedChange} />
                     CIF Gym
                 </label> <br />
-                <div className="tooltip">i
+                    <div className="tooltip">i
                     <span className="tooltiptext">The PAC gym is located on the top floor and has less equipment than CIF.</span>
-                </div>
-                <label>
-                    <input
-                        name="pacGym"
-                        type="checkbox"
-                        checked={userForm.pacGym}
-                        onChange={this.handleCheckedChange} />
+                    </div>
+                    <label>
+                        <input
+                            name="pacGym"
+                            type="checkbox"
+                            checked={userForm.pacGym}
+                            onChange={this.handleCheckedChange} />
                     PAC Gym
                 </label> <br />
-                <input type="checkbox" className="info-btn hidden" />
-                <label>
-                    <input
-                        name="badminton"
-                        type="checkbox"
-                        checked={userForm.badminton}
-                        onChange={this.handleCheckedChange} />
+                    <input type="checkbox" className="info-btn hidden" />
+                    <label>
+                        <input
+                            name="badminton"
+                            type="checkbox"
+                            checked={userForm.badminton}
+                            onChange={this.handleCheckedChange} />
                     Badminton
                 </label> <br />
-                <input type="checkbox" className="info-btn hidden" />
-                <label>
-                    <input
-                        name="basketball"
-                        type="checkbox"
-                        checked={userForm.basketball}
-                        onChange={this.handleCheckedChange} />
+                    <input type="checkbox" className="info-btn hidden" />
+                    <label>
+                        <input
+                            name="basketball"
+                            type="checkbox"
+                            checked={userForm.basketball}
+                            onChange={this.handleCheckedChange} />
                     Basketball
                 </label> <br />
-                <input type="checkbox" className="info-btn hidden" />
-                <label>
-                    <input
-                        name="skating"
-                        type="checkbox"
-                        checked={userForm.skating}
-                        onChange={this.handleCheckedChange} />
+                    <input type="checkbox" className="info-btn hidden" />
+                    <label>
+                        <input
+                            name="skating"
+                            type="checkbox"
+                            checked={userForm.skating}
+                            onChange={this.handleCheckedChange} />
                     Skating
                 </label> <br />
-                <div className="tooltip">i
+                    <div className="tooltip">i
                     <span className="tooltiptext">The Studio hosts a variety of fitness and wellness classNamees including but not limited to Cycling, Pilates, Yoga and Zumba.</span>
-                </div>
-                <label>
-                    <input
-                        name="studio"
-                        type="checkbox"
-                        checked={userForm.studio}
-                        onChange={this.handleCheckedChange} />
+                    </div>
+                    <label>
+                        <input
+                            name="studio"
+                            type="checkbox"
+                            checked={userForm.studio}
+                            onChange={this.handleCheckedChange} />
                     Studio
                 </label> <br />
-                <div className="tooltip">i
+                    <div className="tooltip">i
                     <span className="tooltiptext">The Field House can be used for drop-in recreation.</span>
-                </div>
-                <label>
-                    <input
-                        name="fieldHouse"
-                        type="checkbox"
-                        checked={userForm.fieldHouse}
-                        onChange={this.handleCheckedChange} />
+                    </div>
+                    <label>
+                        <input
+                            name="fieldHouse"
+                            type="checkbox"
+                            checked={userForm.fieldHouse}
+                            onChange={this.handleCheckedChange} />
                     Field House
                 </label> <br />
-                <br />
+                    <br />
+                    <br />
+                    <input type="submit" value="Next" />
 
-                <strong>Please make sure that you are logged out of any Google accounts (delete cookies too).</strong><br></br>
-
-                <input type="submit" />
-
-                {this.state.isSubmitted &&
-                    <Redirect to={{ pathname: "/result" }} />}
-            </form>
+                    {this.state.isSubmitted &&
+                        <Redirect to={{ pathname: "/result" }} />}
+                </form>
+            </div>
         );
     }
 }

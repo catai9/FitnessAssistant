@@ -205,9 +205,7 @@ class ResultScreen extends React.Component {
         Object.keys(sportGrouped).forEach((sport) => {
             // For each location in sportGroupedArray[sport]
             Object.keys(sportGrouped[sport]).forEach((location) => {
-                // Print out the sport name using h1 tags
-                // Print out the location next to the sport name using h1 tags
-                rows.push(<h2>{sport} {location}</h2>);
+                rows.push(<h4>{sport} at {location}</h4>);
 
                 sportGrouped[sport][location].forEach((event) => {
                     // Show a ul tag (so the list appears as bullet points)
@@ -215,28 +213,28 @@ class ResultScreen extends React.Component {
                     //         Show a clickable button. On click, it will call a method to allow the user to delete that event from their calendar.
                     //         List that event start & end date using li tags 
                     // Show the end of the ul tag.
-                    rows.push(<ul><li>
-                        <button onClick={() => { this.deleteEvent(event) }}>Delete</button>
-                        {event.start} to {event.end}</li>
+                    rows.push(<ul className="bookedList"><li>
+                        <button onClick={() => { this.deleteEvent(event) }}>🗑️ </button>
+                         {event.start} to {event.end}</li>
                     </ul>)
                 });
             });
         })
 
         return (
-            <div>
+            <span>
                 {rows}
-            </div>
+            </span>
         )
     }
 
     // From current format --> Monday, Jan 1 5:30 - Monday, Jan 1 6:30 pm
     transformDate(date) {
-        let formattedDate = moment(date.dateTime).format("dddd, MMM DD h:mm a");
+        let formattedDate = moment(date.dateTime).format("dddd, MMMM DD h:mm a");
         return formattedDate;
     }
 
-     // Read in and store the available sport activity events from the Excel file in an array.
+    // Read in and store the available sport activity events from the Excel file in an array.
     componentDidMount() {
         // All the fitness options have been read in and stored in this array: sportAvailableTimes.
         // All the facility closure dates have been read in and stored in this array: facilityClosed.
@@ -444,63 +442,76 @@ class ResultScreen extends React.Component {
                 }
                 // Only show if at least one date is available.
                 if (available) {
-                    let description = option["key"]["Sport"] + " at " + option["key"]["Location"] + " " + option["key"]["Day"] + " " + option["key"]["Open Time"] + " - " + option["key"]["Close Time"];
+                    let description = option["key"]["Sport"] + " at " + option["key"]["Location"] + " on " + option["key"]["Day"] + " from " + this.tConv24(option["key"]["Open Time"]) + " - " + this.tConv24(option["key"]["Close Time"]);
 
                     let dates = [];
 
                     option["dates"].forEach((date) => {
-                        let dateVal = moment(date["date"]).format('MMMM Do YYYY');
+                        let dateVal = moment(date["date"]).format('MMMM DD, YYYY');
                         let category = date["category"];
 
                         // Disable the checkbox if the date cannot be selected.
                         if (category != 0) {
                             dates.push(
-                                <div>
-                                    <p class={classMap[date["category"]]}>{dateVal}</p>
-                                </div>
+                                <span>
+                                    <p className={classMap[date["category"]] + " noAdd"}>{dateVal}</p>
+                                </span>
                             );
                         }
                         else {
                             dates.push(
-                                <div>
-                                    <p class={classMap[date["category"]]}>{dateVal}
+                                <span>
+                                    <p className={classMap[date["category"]] + " canAdd"}>
                                         <button onClick={() => { this.addEvent(date["date"], option["key"]["Sport"], option["key"]["Location"], option["key"]["Open Time"], option["key"]["Close Time"]) }}>
-                                            Add to Calendar
+                                        📅
                                         </button>
+                                        {dateVal}
                                     </p>
-                                </div>
+                                </span>
                             );
                         }
                     })
-                    rows.push(<div><ul><li>
-                        <Collapsible trigger={description}>
+                    rows.push(<p>
+                        <Collapsible trigger={"+ " + description}>
                             {dates}
                         </Collapsible>
-                    </li></ul> </div>
+                    </p>
                     );
                 }
             })
 
             return (
-                <div>
-                    <p>Legend: </p>
-                    <ul>
-                        <li class="blue">Blue: Available Event</li>
-                        <li class="red">Red: Conflicting Event (there is already an event with that day and time)</li>
-                        <li class="black">Black: Facility Closure</li>
-                        <li class="orange">Orange: Max 1 Activity/Day Desired and Already One Activity That Day</li>
-                    </ul>
-                    <p>Possible Options: </p>
-                    {rows.length > 0 ? rows : <div>All available times conflict with your current schedule, facility closures, and/or you already have an event during that day (and checked off max 1 activity/day).</div>}
-                </div>
+                <span>
+                    <h3>Legend:</h3>
+                        <p class="blue">Blue: Available Event</p>
+                        <p class="red">Red: Conflicting Event (there is already an event with that day and time)</p>
+                        <p class="black">Black: Facility Closure</p>
+                        <p class="orange">Orange: Max 1 Activity/Day Desired and Already One Activity That Day</p>
+                    <h3>Possible Options: </h3>
+                    {rows.length > 0 ? rows : <p>All available times conflict with your current schedule, facility closures, and/or you already have an event during that day (and checked off max 1 activity/day).</p>}
+                </span>
             )
         }
 
         // If no boxes checked on userform then just show a general message.
         else {
-            return <div>No Fitness Options Available. <br /> Please make sure you check off at least one sport.</div>
+            return <p>No Fitness Options Available. <br /> Please make sure you check off at least one sport.</p>
         }
     }
+
+    // Convert the army time to a more readable time (14:00 --> 2:00 PM).
+    // This method was copied from: https://stackoverflow.com/questions/13898423/javascript-convert-24-hour-time-of-day-string-to-12-hour-time-with-am-pm-and-no
+    // This method was also revised to show : between the times.
+    tConv24(time24) {
+        var ts = time24;
+        var H = ts.split(time24, ":")[0];
+        var h = (H % 12) || 12;
+        h = (h < 10)?("0"+h):h;  // leading 0 at the left for 1 digit hours
+        var ampm = H < 12 ? " AM" : " PM";
+        var min = ts.split(time24, ":")[1];
+        ts = h + ":" + min + ampm;
+        return ts;
+      };
 
     // Calculates and shows the average number of hours of fitness activities in the user inputted date range. 
     showAvgHrs() {
@@ -513,7 +524,7 @@ class ResultScreen extends React.Component {
         var end = new Date(this.props.formData.endDate);
         var diff = (end.getTime() - start.getTime()) / 1000;
         diff /= (60 * 60 * 24 * 7);
-        var weeks = Math.abs(Math.round(diff));
+        var weeks = Math.abs(diff);
 
         // If number of weeks between start and end date is > 0, set numWeeks to the # of weeks between start & end date.
         if (weeks > 0) {
@@ -533,25 +544,30 @@ class ResultScreen extends React.Component {
         })
 
         return (
-            <div>
-                <h1>Average Hrs/Week:</h1>
-                <h2>Desired Average Hrs/Week: {this.props.formData.avgHrsPerWk}</h2>
-                <h2>Current Average Hrs/Week: {Math.round((sumHrs / numWeeks) * 10) / 10}</h2>
-                <p>Total Hours: {sumHrs}</p>
-                <p>Number of Weeks: {numWeeks}</p>
-            </div>
+            <span>
+                <h3>Desired Average Hrs/Week: {this.props.formData.avgHrsPerWk}</h3>
+                <h3>Current Average Hrs/Week: {Math.round((sumHrs / numWeeks) * 10) / 10}</h3>
+                <ul>
+                    <li>Total Hours: {sumHrs}</li>
+                    <li>Number of Weeks: {Math.round(numWeeks * 10) / 10}</li>
+                </ul>
+            </span>
         )
     }
 
     // General overview of the result screen.
     showResultScreen() {
         return (
-            <div>
+            <div className="section">
+                <h1>UWaterloo Fitness Assistant</h1>
+                <h2 className="sectionHead">Average Hrs/Week</h2>
                 {this.showAvgHrs()}
-                <h1>Booked Sport Events</h1>
-                <p>Note: This will only shows events that have a summary that includes one of the sports supported by this system.</p>
+                <br />
+                <h2 className="sectionHead">Booked Sport Events</h2>
+                <h3>Note: This will only shows events that have a summary that includes one of the sports supported by this system.</h3>
                 {this.showBookedSportEvent()}
-                <h1>Possible Fitness Options</h1>
+                <br />
+                <h2 className="sectionHead">Possible Fitness Options</h2>
                 {this.showFitnessOptions()}
             </div>
         )

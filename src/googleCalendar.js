@@ -20,17 +20,22 @@ export default class SignInButton extends React.Component {
     // This ensures that the events in bookedSportEvents are within the time period.
     getEvents() {
         if (this.state.isSignedIn) {
-            window.gapi.client.calendar.events.list({
-                'calendarId': 'primary',
-                'timeMin': new Date(this.props.start).toISOString(),
-                'timeMax': new Date(this.props.end).toISOString(),
-                'orderBy': 'startTime',
-                'singleEvents': true,
-            }).then(({ result }) => {
-                this.props.handleUserBusy(result.items);
+            try{
+                window.gapi.client.calendar.events.list({
+                    'calendarId': 'primary',
+                    'timeMin': new Date(this.props.start).toISOString(),
+                    'timeMax': new Date(this.props.end).toISOString(),
+                    'orderBy': 'startTime',
+                    'singleEvents': true,
+                }).then(({ result }) => {
+                    this.props.handleUserBusy(result.items);
+                }
+                )
+                this.props.setSignedIn();
             }
-            )
-            this.props.setSignedIn();
+            catch(err){
+                alert("An error occurred. Please go back to Home and try again.");
+            }
         }
     }
 
@@ -45,11 +50,12 @@ export default class SignInButton extends React.Component {
     // Screen to prompt user to sign in to their Google Account.
     signIn() {
         return (
-            <div>
-                Please sign in and allow access to your Google calendar. <br></br>
-                Make sure that you have already logged out of all your Google accounts (delete cookies if needed).
-                <br /><br />
-                <button onClick={(e) => ApiCalendar.handleAuthClick()}>
+            <div className="section">
+                <h1>Google Calendar Permission</h1>
+                UWaterloo Fitness Assistant requires permission to your Google Calendar for purposes of checking your availability. <br/><br/>
+                Please ensure that you have already logged out of all your Google accounts (delete cookies if needed).<br/><br/>
+                When ready, click the button below to sign in and allow access to your Google calendar. <br/><br/><br/>
+                <button className="signInBtn" onClick={(e) => ApiCalendar.handleAuthClick()}>
                     Sign In
               </button>
             </div>
@@ -59,7 +65,7 @@ export default class SignInButton extends React.Component {
     // Renders the Google Sign in page if user not signed in. 
     render() {
         return (
-            <div>
+            <div className="section">
                 {!this.state.isSignedIn && this.signIn()}
             </div>
         );
