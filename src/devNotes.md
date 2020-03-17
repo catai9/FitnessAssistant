@@ -1,0 +1,3 @@
+* May need to npm install -save packages. (lodash, d3, etc. - go thru imports)
+* API Keys not shown on GitHub for safety purposes.
+* REVISE DECISION TREE Logic is opposite to the tree (check if facility closed, then check if space (if there is an event in the calendar that occurs at the same time or completely overlaps the activity; will show times where there is slight overlap but there is availabilty --> user can also adjust times), then check if limit 1 activity checked, if so, check if there is already an activity that day).

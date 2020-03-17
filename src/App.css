@@ -33,3 +33,16 @@ input.hidden {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.blue {
+  color: blue;
+}
+.red {
+  color: red;
+}
+.black {
+  color: black;
+}
+.orange {
+  color: orange;
+}

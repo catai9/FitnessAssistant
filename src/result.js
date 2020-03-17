@@ -8,7 +8,7 @@ import moment from 'moment';
 import Collapsible from 'react-collapsible';
 
 const sportMapping = {
-    "Swim": "swimming",
+    "Swimming": "swimming",
     "CIF Fitness": "cifGym",
     "Workout": "pacGym",
     "Badminton": "badminton",
@@ -17,8 +17,6 @@ const sportMapping = {
     "Studio": "studio",
     "Field House": "fieldHouse",
 }
-
-// NEED TO FINISH: Add description for each method (in case you forget) + CSS.
 
 class ResultScreen extends React.Component {
     constructor(props) {
@@ -65,8 +63,9 @@ class ResultScreen extends React.Component {
         this.state.bookedEvents.forEach((event) => {
             let summary = event.summary;
             // Only shows events made using our system (with name of sport).
-            this.state.sports.forEach((sport) => {
-                if (summary.toLowerCase().includes(sport)) {
+            Object.keys(sportMapping).forEach((sport) => {
+                if (summary.toLowerCase().includes(sport.toLowerCase())) {
+                    event.summary = sport;
                     sportEvents.push(event);
                 }
             });
@@ -87,7 +86,10 @@ class ResultScreen extends React.Component {
                 });
             });
         });
-        this.setState({ bookedSportEvents: sportGrouped });
+        this.setState({ bookedSportEvents: sportGrouped }, () => {
+            /// Initializes the state variable to a tailored list of the fitness options and its associated dates.
+            this.getUserFitnessOptions();
+        });
     }
 
     // Deletes a given event from the Google Calendar.
@@ -122,10 +124,77 @@ class ResultScreen extends React.Component {
         }
     }
 
+    // Add an event to the Google Calendar.
+    addEvent(date, sportName, location, startTime, endTime) {
 
-    // If the user clicks the delete button next to the header, then loop through all of the tags and remove them.
+        // Allow user to change the start and end times (values can be changed).
+        // Prompts user for start and end time adjustment.
+        // Do not check the times to be within the available time as user may want to add in travel and changing time.
+        var userStart = prompt("Start Time (hh:mm): ", startTime);
+        while (userStart == null || userStart == "") {
+            var userStart = prompt("Start Time (hh:mm): ", startTime);
+        }
+        var userEnd = prompt("End Time (hh:mm): ", endTime);
+        while (userEnd == null || userEnd == "") {
+            var userEnd = prompt("End Time (hh:mm): ", endTime);
+        }
+        startTime = userStart;
+        endTime = userEnd;
+
+        let startDate = new Date(moment(date).format('MMMM D, YYYY') + " " + startTime + ":00");
+        let endDate = new Date(moment(date).format('MMMM D, YYYY') + " " + endTime + ":00");
+
+        // Before submitting, check the start and end times (if user changed values).
+        // Check that endDate >= startDate.
+        if (endDate >= startDate) {
+            //RFC 3339 format
+            const startDateTime = startDate.toISOString();
+            const endDateTime = endDate.toISOString();
+
+            // Create an event with the title: sportName, location: location, etc. 
+            var event = {
+                'summary': sportName,
+                'location': location,
+                'start': {
+                    'dateTime': startDateTime
+                },
+                'end': {
+                    'dateTime': endDateTime
+                }
+            };
+
+            var request = window.gapi.client.calendar.events.insert({
+                'calendarId': 'primary',
+                'resource': event
+            });
+
+            // Update event list due to event change.
+            let updatedBookedEvents = this.state.bookedEvents;
+
+            request.execute((event) => {
+                // Display a message to the user if there was an issue.
+                if (event.htmlLink == undefined) {
+                    alert("Event not added successfully. Make sure the entered times are in the right format (hh:mm)!");
+                }
+                // Add that event to the booked events. 
+                else {
+                    updatedBookedEvents.push(event);
+                    this.setState({ bookedEvents: updatedBookedEvents },
+                        () => {
+                            this.setBookedSportEvents();
+                        });
+                }
+            });
+        }
+        // Else if checks do not pass
+        else {
+            // Show an alert that start and end must be in the range of the available time.
+            alert("Please make sure that the end time is AFTER the start time");
+        }
+    }
+
+    // Show all the booked sport events by groupings of sport & location (then alphabetically by date).
     showBookedSportEvent() {
-
         let sportGrouped = this.state.bookedSportEvents;
         var rows = [];
 
@@ -163,28 +232,30 @@ class ResultScreen extends React.Component {
 
     // From current format --> Monday, Jan 1 5:30 - Monday, Jan 1 6:30 pm
     transformDate(date) {
-        let formattedDate = moment(date.dateTime).format("dddd MMM DD h:mm a");
+        let formattedDate = moment(date.dateTime).format("dddd, MMM DD h:mm a");
         return formattedDate;
     }
 
+     // Read in and store the available sport activity events from the Excel file in an array.
     componentDidMount() {
-        // Read in and store the available sport activity events from the Excel file in an array.
         // All the fitness options have been read in and stored in this array: sportAvailableTimes.
         // All the facility closure dates have been read in and stored in this array: facilityClosed.
         d3.csv(data).then((data) => {
-            this.setState({ sportAvailableTimes: data });
+            this.setState({ sportAvailableTimes: data }, () => {
+                // Read in and store the facility closure dates from the Excel file in an array.
+                d3.csv(facilityClosedData).then((facilityClosedData) => {
+                    this.setState({ facilityClosed: facilityClosedData });
+                }).catch(function (err) {
+                    throw err;
+                })
+            });
+
         }).catch(function (err) {
             throw err;
         });
-
-        // Read in and store the facility closure dates from the Excel file in an array.
-        d3.csv(facilityClosedData).then((facilityClosedData) => {
-            this.setState({ facilityClosed: facilityClosedData });
-        }).catch(function (err) {
-            throw err;
-        })
     }
 
+    // Assigns categories of available dates. 
     getUserFitnessOptions() {
         // Create a variable named sportOptionDates to keep track of the sport option and its possible dates + category. 
         // Key: option (includes sport name, location, day of the week, and time).
@@ -222,10 +293,34 @@ class ResultScreen extends React.Component {
                         // For each date in facilityClosed && booked = 0
                         this.state.facilityClosed.forEach((closeDate) => {
                             if (booked == 0) {
-                                // If date === currDate && location === location of option.
-                                if (moment(closeDate["Closed Date"]) == currDate && closeDate["Location"] == entry["Location"]) {
-                                    // Set booked to 2.
-                                    booked = 2;
+                                let formattedCurr = moment(currDate).format("YYYY MM DD");
+                                let formattedClosed = moment(closeDate["Closed Date"], "DD-MM-YYYY").format("YYYY MM DD");
+
+                                // If closed date === currDate && location === location of option.
+                                if (formattedCurr === formattedClosed && closeDate["Location"] === entry["Location"]) {
+
+                                    // Checks the closed date times.
+                                    let closedStartHour = closeDate("Time From").split(":")[0];
+                                    let sportStartHour = entry["Open Time"].split(":")[0];
+                                    let closedStartMin = closeDate("Time From").split(":")[1] || 0;
+                                    let sportStartMin = entry["Open Time"].split(":")[1] || 0;
+                                    let closedEndHour = closeDate("Time To").split(":")[0];
+                                    let sportEndHour = entry["Close Time"].split(":")[0];
+                                    let closedEndMin = closeDate("Time To").split(":")[1] || 0;
+                                    let sportEndMin = entry["Close Time"].split(":")[1] || 0;
+
+                                    // If start time of closure <= the start time of the option 
+                                    //  AND the end time of the closure >= the end time of the option.
+                                    if (
+                                        ((closedStartHour == sportStartHour && closedStartMin <= sportStartMin) ||
+                                            (closedStartHour < sportStartHour))
+
+                                        && ((closedEndHour == sportEndHour && closedEndMin >= sportEndMin)
+                                            || (closedEndHour > sportEndHour))
+                                    ) {
+                                        // Set booked to 2.
+                                        booked = 2;
+                                    }
                                 }
                             }
                         })
@@ -233,8 +328,10 @@ class ResultScreen extends React.Component {
                         // For each event in bookedEvents && booked = 0.
                         this.state.bookedEvents.forEach((event) => {
                             if (booked == 0) {
+                                let startFormatted = moment(event.start).format("MM DD");
+                                let currFormatted = moment(currDate).format("MM DD");
                                 // If date of event == currDate
-                                if (moment(event.start).get('date') == currDate) {
+                                if (startFormatted == currFormatted) {
                                     let bookedStartHour = moment(event.start).get('hour');
                                     let sportStartHour = entry["Open Time"].split(":")[0];
                                     let bookedStartMin = moment(event.start).get('minute');
@@ -244,11 +341,12 @@ class ResultScreen extends React.Component {
                                     let bookedEndMin = moment(event.end).get('minute');
                                     let sportEndMin = entry["Close Time"].split(":")[1] || 0;
 
-
-                                    // If start time of event = the start time of the option 
+                                    // If start time of event <= the start time of the option 
                                     //  AND the end time of the event >= the end time of the option.
-                                    if (bookedStartHour == sportStartHour
-                                        && bookedStartMin == sportStartMin
+                                    if (
+                                        ((bookedStartHour == sportStartHour && bookedStartMin <= sportStartMin) ||
+                                            (bookedStartHour < sportStartHour))
+
                                         && ((bookedEndHour == sportEndHour && bookedEndMin >= sportEndMin)
                                             || (bookedEndHour > sportEndHour))
                                     ) {
@@ -262,15 +360,21 @@ class ResultScreen extends React.Component {
                         // If this.props.limit1Activity.
                         if (this.props.formData.limit1Activity) {
                             // For each event in bookedSportEvents.
-                            this.state.bookedSportEvents.forEach((sportEvent) => {
-                                // If booked = 0.
-                                if (booked == 0) {
-                                    // If date of event == currDate
-                                    if (moment(sportEvent.start).get('date') == currDate) {
-                                        // Set booked to 3. 
-                                        booked = 3;
-                                    }
-                                }
+                            Object.keys(this.state.bookedSportEvents).forEach((sport) => {
+                                Object.keys(this.state.bookedSportEvents[sport]).forEach((location) => {
+                                    this.state.bookedSportEvents[sport][location].forEach((sportEvent) => {
+                                        // If booked = 0.
+                                        if (booked == 0) {
+                                            let startFormatted = moment(sportEvent.start).format("MM DD");
+                                            let currFormatted = moment(currDate).format("MM DD");
+                                            // If date of event == currDate
+                                            if (startFormatted == currFormatted) {
+                                                // Set booked to 3. 
+                                                booked = 3;
+                                            }
+                                        }
+                                    })
+                                })
                             })
                         }
 
@@ -306,12 +410,8 @@ class ResultScreen extends React.Component {
         this.setState({ recommendFitness: sportOptionDates })
     }
 
-    /* NEED TO FINISH: PSEDUOCODE BELOW */
-    // Use the Google Calendar API.
-    addEvent(sportName, location, date, startTime, endTime) {
-        // Create an event with the title: sportName, location: location, etc. 
-    }
-
+    // Shows the possible fitness options and their associated date categories.
+    // Only show options if there is at least one available date that the user can add to calendar.
     showFitnessOptions() {
         if (this.props.formData.swimming ||
             this.props.formData.cifGym ||
@@ -323,12 +423,10 @@ class ResultScreen extends React.Component {
             this.props.formData.fieldHouse
         ) {
             let recommendActivities = this.state.recommendFitness;
-            /// Initializes the state variable to a tailored list of the fitness options and its associated dates.
-            if (recommendActivities == null || recommendActivities.length <= 0) {
-                this.getUserFitnessOptions();
-            }
 
             var rows = [];
+            // Color code dates according to the legend.
+            let classMap = ["blue", "red", "black", "orange"];
 
             // Loops through the values and displays the appropriate sport options by day of the week.
             // No need to sort as the data comes in sorted.
@@ -346,79 +444,51 @@ class ResultScreen extends React.Component {
                 }
                 // Only show if at least one date is available.
                 if (available) {
-                    let description = option["key"]["Sport"] + " " + option["key"]["Day"] + " " + option["key"]["Open Time"] + " - " + option["key"]["Close Time"];
+                    let description = option["key"]["Sport"] + " at " + option["key"]["Location"] + " " + option["key"]["Day"] + " " + option["key"]["Open Time"] + " - " + option["key"]["Close Time"];
 
-                    //             Show a ul tag (show the list with checkboxes)
-                    //                 For each date in optionDates value of the option parameter passed in
-                    //                     if booked = 0 
-                    //                         list that date with a blue checkbox that can be clicked
-                    //                     else if booked = 1
-                    //                         list that date with a red checkbox that cannot be clicked
-                    //                     else if booked = 2 
-                    //                         list that date with a black checkbox that cannot be clicked
-                    //                     else (booked = 3)
-                    //                         list that date with an orange checkbox that cannot be clicked
-                    //             Show the end of the ul tag.   
-                    //             Have a button labelled Add. 
-                    //                 On click of Add, loop through each element in list.
-                    //                     // For each li element in the list.
-                    //                         // If the checkbox is checked
-                    //                             // Allow user to change the start and end times (values can be changed).
-                    //                                 // Before submitting, check the start and end (user changed values).
-                    //                                 // Check that start >= startTime && start <= endTime.
-                    //                                 // Check that end <= endTime && end >= startTime
-                    //                                     // Call the addEvent(sportName, location, date, startTime, endTime)
-                    //                                 // Else if checks do not pass
-                    //                                     // Show an alert that start and end must be in the range of the available time.
-
-
-                    // let displayCollection = "<ul><li><Collapsible trigger={description}><p>Location: ";
-                    // displayCollection = displayCollection + option["key"]["Location"] + "</p><form>";
-
-                    // option["dates"].forEach((date) => {
-                    //     displayCollection = displayCollection + '<div>';
-                    //     displayCollection = displayCollection +
-                    //         '<input type="checkbox" name=' + date["date"] + ' value=' + date["date"] + '/>' +
-                    //         '<label>' + date["date"] + ' with category ' + date["category"] + '</label>' +
-                    //         '</div>';
-                    // })
-                    // displayCollection = displayCollection + '</form>';
-                    // displayCollection = displayCollection + '</Collapsible>';
-                    // displayCollection = displayCollection + '</li></ul>';
-
-                    console.log('OPTION', option["dates"]);
                     let dates = [];
+
                     option["dates"].forEach((date) => {
-                        dates.push(
-                            <div>
-                                <input type="checkbox" name={date["date"]} value={date["date"]} />
-                                <label>{date["date"]} with category {date["category"]}</label>
-                            </div>
-                        );
+                        let dateVal = moment(date["date"]).format('MMMM Do YYYY');
+                        let category = date["category"];
+
+                        // Disable the checkbox if the date cannot be selected.
+                        if (category != 0) {
+                            dates.push(
+                                <div>
+                                    <p class={classMap[date["category"]]}>{dateVal}</p>
+                                </div>
+                            );
+                        }
+                        else {
+                            dates.push(
+                                <div>
+                                    <p class={classMap[date["category"]]}>{dateVal}
+                                        <button onClick={() => { this.addEvent(date["date"], option["key"]["Sport"], option["key"]["Location"], option["key"]["Open Time"], option["key"]["Close Time"]) }}>
+                                            Add to Calendar
+                                        </button>
+                                    </p>
+                                </div>
+                            );
+                        }
                     })
-                    rows.push(<ul><li>
+                    rows.push(<div><ul><li>
                         <Collapsible trigger={description}>
-                            <p>Location: {option["key"]["Location"]}</p>
-                            <form>
-                                {dates}
-                                <input type="checkbox" name="date1" value="date1" />
-                                <label> Date 1</label>
-                            </form>
+                            {dates}
                         </Collapsible>
-                    </li></ul>
+                    </li></ul> </div>
                     );
                 }
             })
 
             return (
-
                 <div>
                     <p>Legend: </p>
                     <ul>
-                        <li>Blue: Available Event</li>
-                        <li>Red: Conflicting Event (there is already an event with that day and time)</li>
-                        <li>Black: Facility Closure</li>
-                        <li>Orange: Max 1 Activity/Day Desired and Already One Activity That Day</li>
+                        <li class="blue">Blue: Available Event</li>
+                        <li class="red">Red: Conflicting Event (there is already an event with that day and time)</li>
+                        <li class="black">Black: Facility Closure</li>
+                        <li class="orange">Orange: Max 1 Activity/Day Desired and Already One Activity That Day</li>
                     </ul>
                     <p>Possible Options: </p>
                     {rows.length > 0 ? rows : <div>All available times conflict with your current schedule, facility closures, and/or you already have an event during that day (and checked off max 1 activity/day).</div>}
@@ -432,6 +502,7 @@ class ResultScreen extends React.Component {
         }
     }
 
+    // Calculates and shows the average number of hours of fitness activities in the user inputted date range. 
     showAvgHrs() {
         // Create a variable named sumHrs to track the sum of the fitness times for the start and end range.
         let sumHrs = 0;
@@ -465,16 +536,20 @@ class ResultScreen extends React.Component {
             <div>
                 <h1>Average Hrs/Week:</h1>
                 <h2>Desired Average Hrs/Week: {this.props.formData.avgHrsPerWk}</h2>
-                <h2>Current Average Hrs/Week: {Math.round(sumHrs / numWeeks, 1)}</h2>
+                <h2>Current Average Hrs/Week: {Math.round((sumHrs / numWeeks) * 10) / 10}</h2>
+                <p>Total Hours: {sumHrs}</p>
+                <p>Number of Weeks: {numWeeks}</p>
             </div>
         )
     }
 
+    // General overview of the result screen.
     showResultScreen() {
         return (
             <div>
                 {this.showAvgHrs()}
                 <h1>Booked Sport Events</h1>
+                <p>Note: This will only shows events that have a summary that includes one of the sports supported by this system.</p>
                 {this.showBookedSportEvent()}
                 <h1>Possible Fitness Options</h1>
                 {this.showFitnessOptions()}

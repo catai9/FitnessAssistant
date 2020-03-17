@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import moment from 'moment';
 
 const termStartDate = ('2020-01-06');
-const termEndDate = ('2020-04-03');
+const termEndDate = ('2020-04-30');
 
 class UserForm extends React.Component {
     constructor(props) {
@@ -22,7 +22,7 @@ class UserForm extends React.Component {
                 fieldHouse: false,
                 avgHrsPerWk: 0,
                 limit1Activity: false,
-            },           
+            },
             isSubmitted: false,
         };
 
@@ -35,10 +35,10 @@ class UserForm extends React.Component {
         const name = event.target.name
         var userForm = this.state.userForm;
         userForm[name] = event.target.value;
-        this.setState({userForm: userForm});
+        this.setState({ userForm: userForm });
     }
 
-    isFormFilledOutProperly(){
+    isFormFilledOutProperly() {
         // Check that start Date is equal to or after the first day of the current term.
         // Check that end Date is equal to or before the last day of the current term.  
         var termStart = moment(termStartDate).format('YYYY-MM-DD');
@@ -55,27 +55,29 @@ class UserForm extends React.Component {
         const name = event.target.name
         var userForm = this.state.userForm;
         userForm[name] = event.target.checked;
-        this.setState({userForm: userForm});
+        this.setState({ userForm: userForm });
     }
 
     handleSubmit() {
         // Check if form is filled out correctly before submitting form.
-        if(this.isFormFilledOutProperly()){
+        if (this.isFormFilledOutProperly()) {
             this.props.handleFormSubmit(this.state.userForm);
             this.setState({ isSubmitted: true });
         } else {
             // Do not submit form and provide a message to the user.
-            alert("Please make sure that your start and end date are within the term start and end dates ("+
-                 termStartDate+ " to "+ termEndDate+ ") AND make sure your end date is not before your start date.");
+            alert("Please make sure that your start and end date are within the term start and end dates (" +
+                termStartDate + " to " + termEndDate + ") AND make sure your end date is not before your start date.");
             this.setState({ isSubmitted: false });
         }
     }
 
     render() {
-        var {userForm} = this.state;
+        var { userForm } = this.state;
         return (
             <form onSubmit={this.handleSubmit}>
-                <p>UWaterloo Fitness Assistant</p>
+                <h1>UWaterloo Fitness Assistant</h1>
+                <h3>Note: For optimal performance, ensure that all your calendar events are located on your primary calendar.</h3>
+
                 <p>Input the following: </p>
 
                 <label>Start Date:</label>
@@ -113,7 +115,7 @@ class UserForm extends React.Component {
                 {/* Info buttons next to specific sports to give more info. */}
                 <div className="tooltip">i
                     <span className="tooltiptext">The CIF gym is larger than the PAC and has more equipment.</span>
-                </div> 
+                </div>
                 <label>
                     <input
                         name="cifGym"
@@ -124,7 +126,7 @@ class UserForm extends React.Component {
                 </label> <br />
                 <div className="tooltip">i
                     <span className="tooltiptext">The PAC gym is located on the top floor and has less equipment than CIF.</span>
-                </div> 
+                </div>
                 <label>
                     <input
                         name="pacGym"
@@ -162,7 +164,7 @@ class UserForm extends React.Component {
                 </label> <br />
                 <div className="tooltip">i
                     <span className="tooltiptext">The Studio hosts a variety of fitness and wellness classNamees including but not limited to Cycling, Pilates, Yoga and Zumba.</span>
-                </div>                
+                </div>
                 <label>
                     <input
                         name="studio"
@@ -173,7 +175,7 @@ class UserForm extends React.Component {
                 </label> <br />
                 <div className="tooltip">i
                     <span className="tooltiptext">The Field House can be used for drop-in recreation.</span>
-                </div> 
+                </div>
                 <label>
                     <input
                         name="fieldHouse"
