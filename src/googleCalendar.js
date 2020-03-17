@@ -1,4 +1,4 @@
-import React, { ReactNode, SyntheticEvent } from 'react';
+import React from 'react';
 import ApiCalendar from 'react-google-calendar-api';
 
 export default class SignInButton extends React.Component {
@@ -16,6 +16,8 @@ export default class SignInButton extends React.Component {
     }
     
     // Get and pass the items to their proper array.
+    // NEED TO FINISH: Events by their start and end date --> not just upcoming.
+    // Make sure that the events in bookedSportEvents are within the time period.
     getEvents(){
         if (this.state.isSignedIn){
             ApiCalendar.listUpcomingEvents()
