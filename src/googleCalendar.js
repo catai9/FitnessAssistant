@@ -38,8 +38,9 @@ export default class SignInButton extends React.Component {
     signIn() {
         return (
             <div>
-                Please sign in and allow access to your Google calendar
-                <br />
+                Please sign in and allow access to your Google calendar. <br></br>
+                Make sure that you have already logged out of all your Google accounts (delete cookies if needed).
+                <br /><br/>
                 <button onClick={(e) => ApiCalendar.handleAuthClick()}>
                     Sign In
               </button>
@@ -51,7 +52,7 @@ export default class SignInButton extends React.Component {
     render() {
         return (
             <div>
-                {!this.state.isSignedIn && this.signIn()}
+                {!this.state.isSignedIn && this.signIn() }
             </div>
         );
     }

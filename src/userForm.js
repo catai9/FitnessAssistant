@@ -183,6 +183,9 @@ class UserForm extends React.Component {
                     Field House
                 </label> <br />
                 <br />
+
+                <strong>Please make sure that you are logged out of any Google accounts (delete cookies too).</strong><br></br>
+
                 <input type="submit" />
 
                 {this.state.isSubmitted &&
