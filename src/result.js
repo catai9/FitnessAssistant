@@ -561,7 +561,7 @@ class ResultScreen extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <SignInButton handleUserBusy={this.handleUserBusy} setSignedIn={this.setSignedIn} />
+                <SignInButton handleUserBusy={this.handleUserBusy} setSignedIn={this.setSignedIn} start={this.props.formData.startDate} end={this.props.formData.endDate} />
                 {this.state.signedIn && this.showResultScreen()}
             </React.Fragment>
         );

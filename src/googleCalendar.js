@@ -14,16 +14,22 @@ export default class SignInButton extends React.Component {
             ApiCalendar.listenSign(this.signUpdate);
         });
     }
-    
+
     // Get and pass the items to their proper array.
-    // NEED TO FINISH: Events by their start and end date --> not just upcoming.
-    // Make sure that the events in bookedSportEvents are within the time period.
-    getEvents(){
-        if (this.state.isSignedIn){
-            ApiCalendar.listUpcomingEvents()
-            .then(({ result }) => {
+    // Shows Events by their start and end date --> not just upcoming.
+    // This ensures that the events in bookedSportEvents are within the time period.
+    getEvents() {
+        if (this.state.isSignedIn) {
+            window.gapi.client.calendar.events.list({
+                'calendarId': 'primary',
+                'timeMin': new Date(this.props.start).toISOString(),
+                'timeMax': new Date(this.props.end).toISOString(),
+                'orderBy': 'startTime',
+                'singleEvents': true,
+            }).then(({ result }) => {
                 this.props.handleUserBusy(result.items);
-            });
+            }
+            )
             this.props.setSignedIn();
         }
     }
@@ -33,7 +39,7 @@ export default class SignInButton extends React.Component {
         this.setState({
             isSignedIn
         }, () => this.getEvents())
-        
+
     }
 
     // Screen to prompt user to sign in to their Google Account.
@@ -42,7 +48,7 @@ export default class SignInButton extends React.Component {
             <div>
                 Please sign in and allow access to your Google calendar. <br></br>
                 Make sure that you have already logged out of all your Google accounts (delete cookies if needed).
-                <br /><br/>
+                <br /><br />
                 <button onClick={(e) => ApiCalendar.handleAuthClick()}>
                     Sign In
               </button>
@@ -54,7 +60,7 @@ export default class SignInButton extends React.Component {
     render() {
         return (
             <div>
-                {!this.state.isSignedIn && this.signIn() }
+                {!this.state.isSignedIn && this.signIn()}
             </div>
         );
     }
