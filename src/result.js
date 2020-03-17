@@ -18,6 +18,8 @@ const sportMapping = {
     "Field House": "fieldHouse",
 }
 
+// NEED TO FINISH: Add description for each method (in case you forget) + CSS.
+
 class ResultScreen extends React.Component {
     constructor(props) {
         super(props);
