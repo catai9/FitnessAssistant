@@ -38,7 +38,8 @@ class ResultScreen extends React.Component {
                 "studio",
                 "fieldHouse",
             ],
-            showModal: false
+            showModal: false, 
+            notCalledBefore: true
         };
         this.handleOpenModal = this.handleOpenModal.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
@@ -141,6 +142,7 @@ class ResultScreen extends React.Component {
     }
 
     getUserFitnessOptions() {
+        this.setState({notCalledBefore: false})
         // Read in and store the available sport activity events from the Excel file in an array.
         // All the fitness options have been read in and stored in this array: sportAvailableTimes.
         // All the facility closure dates have been read in and stored in this array: facilityClosed.
@@ -340,8 +342,6 @@ class ResultScreen extends React.Component {
     }
 
     showFitnessOptions() {
-
-
         if (this.props.formData.swimming ||
             this.props.formData.cifGym ||
             this.props.formData.pacGym ||
@@ -351,11 +351,8 @@ class ResultScreen extends React.Component {
             this.props.formData.studio ||
             this.props.formData.fieldHouse
         ) {
-
-
-
             /// Initializes the state variable to a tailored list of the fitness options and its associated dates.
-            if (this.state.sportAvailableTimes <= 0) {
+            if (this.state.notCalledBefore) {
                 this.getUserFitnessOptions();
             }
             let recommendActivities = this.state.recommendFitness;
@@ -397,7 +394,7 @@ class ResultScreen extends React.Component {
 
         // If no boxes checked on userform then just show a general message.
         else {
-            return <div>No Fitness Options Available. <br/> (Please make sure you check off at least one sport).</div>
+            return <div>No Fitness Options Available. <br/> Please make sure you check off at least one sport.</div>
         }
     }
 
