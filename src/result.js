@@ -5,7 +5,18 @@ import data from './WeeklyActivityTimes.csv';
 import facilityClosedData from './LocationClosureDates.csv';
 import _ from "lodash";
 import moment from 'moment';
-import {ReactModal} from 'react-modal';
+import { ReactModal } from 'react-modal';
+
+const sportMapping = {
+    "Swim": "swimming",
+    "CIF Fitness": "cifGym",
+    "Workout": "pacGym",
+    "Badminton": "badminton",
+    "Basketball": "basketball",
+    "Skate": "skating",
+    "Studio": "studio",
+    "Field House": "fieldHouse",
+}
 
 class ResultScreen extends React.Component {
     constructor(props) {
@@ -78,8 +89,8 @@ class ResultScreen extends React.Component {
             });
         });
         // Only sets the state if the object is not empty.
-        if(Object.keys(sportGrouped).length > 0){
-            this.setState(Object.assign(this.state.bookedSportEvents,sportGrouped));
+        if (Object.keys(sportGrouped).length > 0) {
+            this.setState(Object.assign(this.state.bookedSportEvents, sportGrouped));
         }
     }
 
@@ -87,7 +98,7 @@ class ResultScreen extends React.Component {
     // If the user clicks the garbage can next to the header, then loop through all of the tags and remove them.
     showBookedSportEvent() {
         // Calls the set function if the object is empty just in case.
-        if(Object.keys(this.state.bookedSportEvents).length <= 0){
+        if (Object.keys(this.state.bookedSportEvents).length <= 0) {
             this.setBookedSportEvents();
         }
 
@@ -97,11 +108,11 @@ class ResultScreen extends React.Component {
         // For each sport in sportGrouped Array
         Object.keys(sportGrouped).forEach((sport) => {
             // For each location in sportGroupedArray[sport]
-            Object.keys(sportGrouped[sport]).forEach((location)=>{
+            Object.keys(sportGrouped[sport]).forEach((location) => {
                 // Print out the sport name using h1 tags
                 // Print out the location next to the sport name using h1 tags
                 rows.push(<h2>{sport} {location}</h2>);
-                
+
                 sportGrouped[sport][location].forEach((event) => {
                     // Show a ul tag (so the list appears as bullet points)
                     //         For each event in sportGroupedArray[sport][location]
@@ -111,7 +122,7 @@ class ResultScreen extends React.Component {
                     rows.push(<ul><li>
                         <button>Delete</button>
                         {event.start} to {event.end}</li>
-                        </ul>)
+                    </ul>)
                 });
             });
         })
@@ -129,7 +140,6 @@ class ResultScreen extends React.Component {
         return formattedDate;
     }
 
-    /* NEED TO FINISH: PSEDUOCODE BELOW */
     getUserFitnessOptions() {
         // Read in and store the available sport activity events from the Excel file in an array.
         // All the fitness options have been read in and stored in this array: sportAvailableTimes.
@@ -139,7 +149,7 @@ class ResultScreen extends React.Component {
         }).catch(function (err) {
             throw err;
         });
-        
+
         // Read in and store the facility closure dates from the Excel file in an array.
         d3.csv(facilityClosedData).then((facilityClosedData) => {
             this.setState({ facilityClosed: facilityClosedData });
@@ -155,46 +165,112 @@ class ResultScreen extends React.Component {
         // For each option in sportAvailableTimes.
         this.state.sportAvailableTimes.forEach((entry) => {
             // Check if the user checked off the sport (if not checked, go to next option).
-            console.log(entry["Sport"]);
+            if (entry != null) {
+                let sport = entry["Sport"];
+                if (this.props.formData[sportMapping[sport]]) {
+                    let dayOfWeek = entry["Day"];
+                    let dowVal = moment().isoWeekday(dayOfWeek);
+                    let currDate = moment(this.props.startDate);
+
+                    // Find the first date after the starting date that is the same day of the week as the sport using a while loop.
+                    // Set currDate = firstDate 
+                    while (currDate.day() != dowVal) {
+                        currDate = moment(currDate).add(1, 'days');
+                    }
+
+                    // Create a variable named optionDates to keep track of the dates for this option. 
+                    let optionDates = [];
+
+                    // While(currDate <= endDate) (date comparison using moment.js).
+                    while (currDate <= moment(this.props.endDate)) {
+                        // Store a variable of booked = to track the category of the date.
+                        // booked = 0: the user can book this event.
+                        // booked = 1: the user has an event during that date and time. 
+                        // booked = 2: the facility is closed during that time.
+                        // booked = 3: activity already booked for that date (+user selected max 1 activity/day).
+                        let booked = 0;
+
+                        // For each date in facilityClosed && booked = 0
+                        this.state.facilityClosed.forEach((closeDate) => {
+                            if (booked == 0) {
+                                // If date === currDate && location === location of option.
+                                if (moment(closeDate["Closed Date"]) == currDate && closeDate["Location"] == entry["Location"]) {
+                                    // Set booked to 2.
+                                    booked = 2;
+                                }
+                            }
+                        })
+
+                        // For each event in bookedEvents && booked = 0.
+                        this.state.bookedEvents.forEach((event) => {
+                            if (booked == 0) {
+                                // If date of event == currDate
+                                if (moment(event.start).get('date') == currDate) {
+                                    let bookedStartHour = moment(event.start).get('hour');
+                                    let sportStartHour = entry["Open Time"].split(":")[0];
+                                    let bookedStartMin = moment(event.start).get('minute');
+                                    let sportStartMin = entry["Open Time"].split(":")[1] || 0;
+                                    let bookedEndHour = moment(event.end).get('hour');
+                                    let sportEndHour = entry["Close Time"].split(":")[0];
+                                    let bookedEndMin = moment(event.end).get('minute');
+                                    let sportEndMin = entry["Close Time"].split(":")[1] || 0;
 
 
+                                    // If start time of event = the start time of the option 
+                                    //  AND the end time of the event >= the end time of the option.
+                                    if (bookedStartHour == sportStartHour
+                                        && bookedStartMin == sportStartMin
+                                        && ((bookedEndHour == sportEndHour && bookedEndMin >= sportEndMin)
+                                            || (bookedEndHour > sportEndHour))
+                                    ) {
+                                        // Set booked to 1.
+                                        booked = 1;
+                                    }
+                                }
+                            }
+                        })
+
+                        // If this.props.limit1Activity.
+                        if (this.props.formData.limit1Activity) {
+                            // For each event in bookedSportEvents.
+                            this.state.bookedSportEvents.forEach((sportEvent) => {
+                                // If booked = 0.
+                                if (booked == 0) {
+                                    // If date of event == currDate
+                                    if (moment(sportEvent.start).get('date') == currDate) {
+                                        // Set booked to 3. 
+                                        booked = 3;
+                                    }
+                                }
+                            })
+                        }
+
+                        // Store the currDate and its category in an object named tempDate.
+                        // key = currDate
+                        // values = booked
+                        let tempDate = {
+                            date: currDate,
+                            category: booked
+                        }
+
+                        // Append this object to the current value of optionDates.
+                        optionDates.push(tempDate);
+                    }
+                    // Store the combination of the option and its available dates in an object named categorizedDates.
+                    // key = entry
+                    // values = optionDates
+                    let categorizedDates = {
+                        key: entry,
+                        dates: optionDates
+                    }
+
+                    // Append this object to the current value of sportOptionDates.
+                    sportOptionDates = { ...sportOptionDates, categorizedDates };
+                }
+            }
         })
-        
-        // Find the first date after the starting date that is the same day of the week as the sport using a while loop.
-        // Set currDate = firstDate 
-        // Create a variable named optionDates to keep track of the dates for this option. 
-
-        // While(currDate <= endDate) (date comparison using moment.js).
-        // Store a variable of booked = to track the category of the date.
-        // booked = 0: the user can book this event.
-        // booked = 1: the user has an event during that date and time. 
-        // booked = 2: the facility is closed during that time.
-        // booked = 3: activity already booked for that date (+user selected max 1 activity/day).
-
-        // For each date in facilityClosed && booked = 0
-        // If date === currDate && location === location of option.
-        // Set booked to 2.
-
-        // For each event in bookedEvents && booked = 0.
-        // If date of event == currDate
-        // If start time of event = the start time of the option && the end time of the event = the end time of the option.
-        // Set booked to 1.
-
-        // For each event in bookedSportEvents && this.props.limit1Activity && booked = 0.
-        // If date of event == currDate
-        // Set booked to 3.            
-
-        // Store the currDate and its category in an object named tempDate.
-        // key = currDate
-        // values = booked
-        // Append this object to the current value of optionDates.
-
-        // Store the combination of the option and its available dates in an object named categorizedDates.
-        // key = option
-        // values = optionDates
-        // Append this object to the current value of sportOptionDates.
-
         // Set the state of recommendFitness to the value of sportOptionDates.
+        this.setState({ recommendFitness: sportOptionDates });
     }
 
     handleOpenModal(option) {
@@ -263,34 +339,68 @@ class ResultScreen extends React.Component {
         // Create an event with the title: sportName, location: location, etc. 
     }
 
-    /* NEED TO FINISH: PSEDUOCODE BELOW */
     showFitnessOptions() {
-        // Initializes the state variable to a tailored list of the fitness options and its associated dates.
-        this.getUserFitnessOptions();
-        let recommendActivities = this.state.recommendFitness;
 
-        // Loops through the values and displays the appropriate sport options by day of the week.
-        // No need to sort as the data comes in sorted.
-        return (
-            <div>
-                {/* For each option in recommendActivities 
-                        If they have at least 1 date with a booked value of 0 (i.e. one date that can be booked.)
-                            Show button to call a method (showFitnessPopup) to open up a popup. Pass in the option as a parameter to this popup.
-                            Print out the sport name using h1 tags
-                            Print out the location next to the sport name using h1 tags
-                            Print out the day of the week using h1 tags.
-                            Print out the start and end times using h1 tags.
-                        Else (no dates are available for that activity; ex. they all conflict)
-                            Do not show
-                */}
-                {Object.keys(recommendActivities).forEach((option) => {
-                    return (<button onClick={this.handleOpenModal(option)}>Show More</button>)
-                })}
-            </div>
-        )
 
+        if (this.props.formData.swimming ||
+            this.props.formData.cifGym ||
+            this.props.formData.pacGym ||
+            this.props.formData.badminton ||
+            this.props.formData.basketball ||
+            this.props.formData.skating ||
+            this.props.formData.studio ||
+            this.props.formData.fieldHouse
+        ) {
+
+
+
+            /// Initializes the state variable to a tailored list of the fitness options and its associated dates.
+            if (this.state.sportAvailableTimes <= 0) {
+                this.getUserFitnessOptions();
+            }
+            let recommendActivities = this.state.recommendFitness;
+            var rows = [];
+
+            // Loops through the values and displays the appropriate sport options by day of the week.
+            // No need to sort as the data comes in sorted.
+
+            // For each option in recommendActivities 
+            Object.keys(recommendActivities).forEach((option) => {
+                let available = false;
+                // If they have at least 1 date with a booked value of 0 (i.e. one date that can be booked.)
+                if (option["date"].length > 0) {
+                    option["date"].forEach((date) => {
+                        if (date["category"] == 0) {
+                            available = true;
+                        }
+                    })
+                }
+                if (available) {
+                    // Show button to call a method (showFitnessPopup) to open up a popup. Pass in the option as a parameter to this popup.
+                    // Print out the sport name using h1 tags
+                    // Print out the location next to the sport name using h1 tags
+                    // Print out the day of the week using h1 tags.
+                    // Print out the start and end times using h1 tags.
+                    rows.push(<button>Learn More</button>);
+                    rows.push(<h2>{option["key"]["Sport"]} {option["key"]["Location"]} {option["key"]["Day"]} {option["key"]["Open Time"]} {option["key"]["Close Time"]} </h2>)
+                }
+                // Else (no dates are available for that activity; ex. they all conflict)
+                //     Do not show
+            })
+
+            return (
+                <div>
+                    {rows}
+                </div>
+            )
+        }
+
+        // If no boxes checked on userform then just show a general message.
+        else {
+            return <div>No Fitness Options Available. <br/> (Please make sure you check off at least one sport).</div>
+        }
     }
-    
+
     /* NEED TO FINISH: PSEDUOCODE BELOW */
     showAvgHrs() {
         // Create a variable named sumHrs to track the sum of the fitness times for the start and end range.
@@ -305,7 +415,7 @@ class ResultScreen extends React.Component {
 
         return (
             <div>
-                Current Average Hrs/Week {sumHrs / numWeeks}
+                <h1>Current Average Hrs/Week: {sumHrs / numWeeks}</h1>
             </div>
         )
     }

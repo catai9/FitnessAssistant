@@ -101,7 +101,7 @@ class UserForm extends React.Component {
 
                 <label>Preferred Sports:</label>
                 <br />
-                <input type="checkbox" class="info-btn hidden" />
+                <input type="checkbox" className="info-btn hidden" />
                 <label>
                     <input
                         name="swimming"
@@ -111,8 +111,8 @@ class UserForm extends React.Component {
                     Swimming
                 </label> <br />
                 {/* Info buttons next to specific sports to give more info. */}
-                <div class="tooltip">i
-                    <span class="tooltiptext">The CIF gym is larger than the PAC and has more equipment.</span>
+                <div className="tooltip">i
+                    <span className="tooltiptext">The CIF gym is larger than the PAC and has more equipment.</span>
                 </div> 
                 <label>
                     <input
@@ -122,8 +122,8 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     CIF Gym
                 </label> <br />
-                <div class="tooltip">i
-                    <span class="tooltiptext">The PAC gym is located on the top floor and has less equipment than CIF.</span>
+                <div className="tooltip">i
+                    <span className="tooltiptext">The PAC gym is located on the top floor and has less equipment than CIF.</span>
                 </div> 
                 <label>
                     <input
@@ -133,7 +133,7 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     PAC Gym
                 </label> <br />
-                <input type="checkbox" class="info-btn hidden" />
+                <input type="checkbox" className="info-btn hidden" />
                 <label>
                     <input
                         name="badminton"
@@ -142,7 +142,7 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Badminton
                 </label> <br />
-                <input type="checkbox" class="info-btn hidden" />
+                <input type="checkbox" className="info-btn hidden" />
                 <label>
                     <input
                         name="basketball"
@@ -151,7 +151,7 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Basketball
                 </label> <br />
-                <input type="checkbox" class="info-btn hidden" />
+                <input type="checkbox" className="info-btn hidden" />
                 <label>
                     <input
                         name="skating"
@@ -160,8 +160,8 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Skating
                 </label> <br />
-                <div class="tooltip">i
-                    <span class="tooltiptext">The Studio hosts a variety of fitness and wellness classes including but not limited to Cycling, Pilates, Yoga and Zumba.</span>
+                <div className="tooltip">i
+                    <span className="tooltiptext">The Studio hosts a variety of fitness and wellness classNamees including but not limited to Cycling, Pilates, Yoga and Zumba.</span>
                 </div>                
                 <label>
                     <input
@@ -171,8 +171,8 @@ class UserForm extends React.Component {
                         onChange={this.handleCheckedChange} />
                     Studio
                 </label> <br />
-                <div class="tooltip">i
-                    <span class="tooltiptext">The Field House can be used for drop-in recreation.</span>
+                <div className="tooltip">i
+                    <span className="tooltiptext">The Field House can be used for drop-in recreation.</span>
                 </div> 
                 <label>
                     <input

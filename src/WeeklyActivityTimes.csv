@@ -1,4 +1,4 @@
-Sport ,Day,Open Time,Close Time,Location ,Building 
+Sport,Day,Open Time,Close Time,Location,Building 
 Workout,Monday,6:30,23:59,Warrior Zone,PAC
 Studio,Monday,6:30,9:00,PAC Studio 1,PAC
 Basketball,Monday,7:00,17:30,PAC Main,PAC
@@ -41,7 +41,7 @@ Basketball,Wednesday,7:00,22:30,CIF Gym 3,CIF
 Warrior Field ,Wednesday,8:00,19:00,CIF Warrior,CIF
 Field House,Wednesday,9:00,23:59,Indoor Field A,CIF
 Field House,Wednesday,9:00,15:30,Indoor Field B,CIF
-Studio ,Wednesday,9:30,16:00,PAC Studio 1,PAC
+Studio,Wednesday,9:30,16:00,PAC Studio 1,PAC
 Skate,Wednesday,12:00,13:30,CIF Arena,CIF
 Field House,Wednesday,13:30,15:30,Indoor Field C,CIF
 Basketball,Wednesday,19:30,21:00,CIF Gym 2,CIF
