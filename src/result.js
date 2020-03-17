@@ -97,10 +97,6 @@ class ResultScreen extends React.Component {
     /* NEED TO FINISH: DELETION OF EVENT FROM GOOGLE CALENDAR */
     // If the user clicks the garbage can next to the header, then loop through all of the tags and remove them.
     showBookedSportEvent() {
-        // Calls the set function if the object is empty just in case.
-        if (Object.keys(this.state.bookedSportEvents).length <= 0) {
-            this.setBookedSportEvents();
-        }
 
         let sportGrouped = this.state.bookedSportEvents;
         var rows = [];
@@ -406,17 +402,34 @@ class ResultScreen extends React.Component {
         }
     }
 
-    /* NEED TO FINISH: PSEDUOCODE BELOW */
     showAvgHrs() {
         // Create a variable named sumHrs to track the sum of the fitness times for the start and end range.
         let sumHrs = 0;
         let numWeeks = 1;
 
+        // Calculate the difference between the two dates in number of weeks.
+        var start = new Date(this.props.formData.startDate);
+        var end = new Date(this.props.formData.endDate);
+        var diff =(end.getTime() - start.getTime()) / 1000;
+        diff /= (60 * 60 * 24 * 7);
+        var weeks = Math.abs(Math.round(diff));
+
         // If number of weeks between start and end date is > 0, set numWeeks to the # of weeks between start & end date.
-        
+        if(weeks > 0) {
+            numWeeks = weeks;
+        }
+
         // For each event in bookedSportEvents. 
         // Calculate the difference between the end and the start time in terms of hours using moment.js. 
         // Add the difference to sumHrs variable.  
+        Object.keys(this.state.bookedSportEvents).forEach((sport) => {
+            Object.keys(this.state.bookedSportEvents[sport]).forEach((location) => {
+                this.state.bookedSportEvents[sport][location].forEach((event) => {
+                    var hours = Math.abs(new Date(event.end) - new Date(event.start)) / 36e5;
+                    sumHrs = sumHrs + hours;
+                })
+            })
+        })
 
         return (
             <div>
@@ -425,6 +438,7 @@ class ResultScreen extends React.Component {
         )
     }
 
+    // NEED TO FINISH: Make sure that the events in bookedSportEvents are within the time period.
     showResultScreen() {
         return (
             <div>
