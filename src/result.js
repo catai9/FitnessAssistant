@@ -99,7 +99,7 @@ class ResultScreen extends React.Component {
     deleteEvent(event) {
         let selectedEventId = event.id;
         let errorOccurred = false;
-        window.gapi.client.load('calendar', 'v3', () =>  {
+        window.gapi.client.load('calendar', 'v3', () => {
             var request = window.gapi.client.calendar.events.delete({
                 'calendarId': 'primary',
                 'eventId': selectedEventId
@@ -295,29 +295,8 @@ class ResultScreen extends React.Component {
 
                                 // If closed date === currDate && location === location of option.
                                 if (formattedCurr === formattedClosed && closeDate["Location"] === entry["Location"]) {
-
-                                    // Checks the closed date times.
-                                    let closedStartHour = closeDate("Time From").split(":")[0];
-                                    let sportStartHour = entry["Open Time"].split(":")[0];
-                                    let closedStartMin = closeDate("Time From").split(":")[1] || 0;
-                                    let sportStartMin = entry["Open Time"].split(":")[1] || 0;
-                                    let closedEndHour = closeDate("Time To").split(":")[0];
-                                    let sportEndHour = entry["Close Time"].split(":")[0];
-                                    let closedEndMin = closeDate("Time To").split(":")[1] || 0;
-                                    let sportEndMin = entry["Close Time"].split(":")[1] || 0;
-
-                                    // If start time of closure <= the start time of the option 
-                                    //  AND the end time of the closure >= the end time of the option.
-                                    if (
-                                        ((closedStartHour == sportStartHour && closedStartMin <= sportStartMin) ||
-                                            (closedStartHour < sportStartHour))
-
-                                        && ((closedEndHour == sportEndHour && closedEndMin >= sportEndMin)
-                                            || (closedEndHour > sportEndHour))
-                                    ) {
-                                        // Set booked to 2.
-                                        booked = 2;
-                                    }
+                                    // Set booked to 2.
+                                    booked = 2;
                                 }
                             }
                         })
