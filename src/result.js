@@ -39,6 +39,7 @@ class ResultScreen extends React.Component {
                 "fieldHouse",
             ],
             showModal: false,
+            isProcessing: false,
         };
     }
 
@@ -89,6 +90,8 @@ class ResultScreen extends React.Component {
         this.setState({ bookedSportEvents: sportGrouped }, () => {
             /// Initializes the state variable to a tailored list of the fitness options and its associated dates.
             this.getUserFitnessOptions();
+            // States variable of isProcessing to false.
+            this.setState({ isProcessing: false });
         });
     }
 
@@ -96,47 +99,35 @@ class ResultScreen extends React.Component {
     deleteEvent(event) {
         let selectedEventId = event.id;
         let errorOccurred = false;
-        window.gapi.client.load('calendar', 'v3', function () {
+        window.gapi.client.load('calendar', 'v3', () =>  {
             var request = window.gapi.client.calendar.events.delete({
                 'calendarId': 'primary',
                 'eventId': selectedEventId
             });
-            request.execute(function (response) {
+            request.execute((response) => {
                 if (response.error || response == false) {
                     errorOccurred = true;
+                    alert("An error occurred. Please try again.");
+                }
+                else {
+                    this.updateList();
                 }
             });
-        });
-        if (errorOccurred) {
-            alert("An error occurred. Please try again.");
-        }
-        else {
-            // Update event list due to event change.
-            let updatedBookedEvents = this.state.bookedEvents;
-            const index = updatedBookedEvents.indexOf(event);
-            if (index > -1) {
-                updatedBookedEvents.splice(index, 1);
-            }
-            this.setState({ bookedEvents: updatedBookedEvents },
-                () => {
-                    this.setBookedSportEvents();
-                });
-        }
+        })
     }
 
     // Add an event to the Google Calendar.
     addEvent(date, sportName, location, startTime, endTime) {
-
         // Allow user to change the start and end times (values can be changed).
         // Prompts user for start and end time adjustment.
         // Do not check the times to be within the available time as user may want to add in travel and changing time.
         var userStart = prompt("Start Time (hh:mm): ", startTime);
         while (userStart == null || userStart == "") {
-            var userStart = prompt("Start Time (hh:mm): ", startTime);
+            userStart = prompt("Start Time (hh:mm): ", startTime);
         }
         var userEnd = prompt("End Time (hh:mm): ", endTime);
         while (userEnd == null || userEnd == "") {
-            var userEnd = prompt("End Time (hh:mm): ", endTime);
+            userEnd = prompt("End Time (hh:mm): ", endTime);
         }
         startTime = userStart;
         endTime = userEnd;
@@ -168,9 +159,6 @@ class ResultScreen extends React.Component {
                 'resource': event
             });
 
-            // Update event list due to event change.
-            let updatedBookedEvents = this.state.bookedEvents;
-
             request.execute((event) => {
                 // Display a message to the user if there was an issue.
                 if (event.htmlLink == undefined) {
@@ -178,19 +166,30 @@ class ResultScreen extends React.Component {
                 }
                 // Add that event to the booked events. 
                 else {
-                    updatedBookedEvents.push(event);
-                    this.setState({ bookedEvents: updatedBookedEvents },
-                        () => {
-                            this.setBookedSportEvents();
-                        });
+                    // Update event list due to event change.
+                    this.updateList();
                 }
-            });
+            })
         }
         // Else if checks do not pass
         else {
             // Show an alert that start and end must be in the range of the available time.
             alert("Please make sure that the end time is AFTER the start time");
         }
+    }
+
+    // Update event list due to event change.
+    updateList() {
+        this.setState({ isProcessing: true });
+        window.gapi.client.calendar.events.list({
+            'calendarId': 'primary',
+            'timeMin': new Date(this.props.formData.startDate).toISOString(),
+            'timeMax': new Date(this.props.formData.endDate).toISOString(),
+            'orderBy': 'startTime',
+            'singleEvents': true,
+        }).then(({ result }) => {
+            this.handleUserBusy(result.items);
+        });
     }
 
     // Show all the booked sport events by groupings of sport & location (then alphabetically by date).
@@ -214,8 +213,8 @@ class ResultScreen extends React.Component {
                     //         List that event start & end date using li tags 
                     // Show the end of the ul tag.
                     rows.push(<ul className="bookedList"><li>
-                        <button onClick={() => { this.deleteEvent(event) }}>🗑️ </button>
-                         {event.start} to {event.end}</li>
+                        <button onClick={() => { this.deleteEvent(event) }}> {this.state.isProcessing ? '⌛' : '🗑️'} </button>
+                        {event.start} to {event.end}</li>
                     </ul>)
                 });
             });
@@ -463,7 +462,7 @@ class ResultScreen extends React.Component {
                                 <span>
                                     <p className={classMap[date["category"]] + " canAdd"}>
                                         <button onClick={() => { this.addEvent(date["date"], option["key"]["Sport"], option["key"]["Location"], option["key"]["Open Time"], option["key"]["Close Time"]) }}>
-                                        📅
+                                            {this.state.isProcessing ? '⌛' : '📅'}
                                         </button>
                                         {dateVal}
                                     </p>
@@ -483,10 +482,10 @@ class ResultScreen extends React.Component {
             return (
                 <span>
                     <h3>Legend:</h3>
-                        <p class="blue">Blue: Available Event</p>
-                        <p class="red">Red: Conflicting Event (there is already an event with that day and time)</p>
-                        <p class="black">Black: Facility Closure</p>
-                        <p class="orange">Orange: Max 1 Activity/Day Desired and Already One Activity That Day</p>
+                    <p class="blue">Blue: Available Event</p>
+                    <p class="red">Red: Conflicting Event (there is already an event with that day and time)</p>
+                    <p class="black">Black: Facility Closure</p>
+                    <p class="orange">Orange: Max 1 Activity/Day Desired and Already One Activity That Day</p>
                     <h3>Possible Options: </h3>
                     {rows.length > 0 ? rows : <p>All available times conflict with your current schedule, facility closures, and/or you already have an event during that day (and checked off max 1 activity/day).</p>}
                 </span>
@@ -500,18 +499,17 @@ class ResultScreen extends React.Component {
     }
 
     // Convert the army time to a more readable time (14:00 --> 2:00 PM).
-    // This method was copied from: https://stackoverflow.com/questions/13898423/javascript-convert-24-hour-time-of-day-string-to-12-hour-time-with-am-pm-and-no
-    // This method was also revised to show : between the times.
+    // This method was based on: https://stackoverflow.com/questions/13898423/javascript-convert-24-hour-time-of-day-string-to-12-hour-time-with-am-pm-and-no
+    // This method was revised to show : between the times.
     tConv24(time24) {
         var ts = time24;
-        var H = ts.split(time24, ":")[0];
+        var H = ts.split(":")[0];
         var h = (H % 12) || 12;
-        h = (h < 10)?("0"+h):h;  // leading 0 at the left for 1 digit hours
         var ampm = H < 12 ? " AM" : " PM";
-        var min = ts.split(time24, ":")[1];
+        var min = ts.split(":")[1];
         ts = h + ":" + min + ampm;
         return ts;
-      };
+    };
 
     // Calculates and shows the average number of hours of fitness activities in the user inputted date range. 
     showAvgHrs() {
@@ -548,7 +546,7 @@ class ResultScreen extends React.Component {
                 <h3>Desired Average Hrs/Week: {this.props.formData.avgHrsPerWk}</h3>
                 <h3>Current Average Hrs/Week: {Math.round((sumHrs / numWeeks) * 10) / 10}</h3>
                 <ul>
-                    <li>Total Hours: {sumHrs}</li>
+                    <li>Total Hours: {Math.round(sumHrs * 10) / 10}</li>
                     <li>Number of Weeks: {Math.round(numWeeks * 10) / 10}</li>
                 </ul>
             </span>
