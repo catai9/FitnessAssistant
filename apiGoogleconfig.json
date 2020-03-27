@@ -1,6 +1,6 @@
 {
-    "clientId": "CLIENTID",
-    "apiKey": "APIKEY",
+    "clientId": "INSERT CLIENTID HERE",
+    "apiKey": "INSERT APIKEY HERE",
     "scope": "https://www.googleapis.com/auth/calendar",
     "discoveryDocs": ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
   }
