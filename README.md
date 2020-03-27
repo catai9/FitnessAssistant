@@ -8,7 +8,7 @@ Please Note The Following:
 
 3. To run the project:
 - Please download or clone to your desired folder. 
-- Change the API Key and clientId in apiGoogleconfig.json.
+- Change the API Key and clientId in apiGoogleconfig.json. They are not shown on Github for privacy purposes.
 - In Terminal, navigate to the project directory and run the following two lines: 
     npm install
     npm start

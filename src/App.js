@@ -1,3 +1,5 @@
+// Handles the global variables and page routing.
+
 import React from 'react';
 import './App.css';
 import UserForm from './userForm';
@@ -12,6 +14,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // Global variables are stored in the parent.
       formData: {
         startDate: '',
         endDate: '',
@@ -36,10 +39,10 @@ class App extends React.Component {
 
   render() {
     return (
+      // Page Routing is done in this file.
       <Router>
         <Route exact path="/" render={(props) => <UserForm {...props} handleFormSubmit={this.handleFormSubmit} />} />
         <Route exact path="/result" render={(props) => <ResultScreen {...props} formData={this.state.formData} />} />
-        {/* <Route exact path="/result" component={ResultScreen} /> */}
       </Router>
     );
   }

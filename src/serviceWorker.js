@@ -1,3 +1,5 @@
+// Service worker; script that runs in the background.
+
 // This optional code is used to register a service worker.
 // register() is not called by default.
 

@@ -1,3 +1,5 @@
+// Displays form fields and stores the user input into variables.
+
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import moment from 'moment';
@@ -31,6 +33,7 @@ class UserForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // Updates the state value if the user inputs a value into the respective textbox.
     handleChange(event) {
         const name = event.target.name
         var userForm = this.state.userForm;
@@ -38,6 +41,9 @@ class UserForm extends React.Component {
         this.setState({ userForm: userForm });
     }
 
+    // Form field validation before the user can submit. 
+    // Returns true if the fields are filled out correctly.
+    // Returns false otherwise.
     isFormFilledOutProperly() {
         // Check that start Date is equal to or after the first day of the current term.
         // Check that end Date is equal to or before the last day of the current term.  
@@ -51,6 +57,7 @@ class UserForm extends React.Component {
             termEnd >= userEnd;
     }
 
+    // Updates the state value if the user checks or unchecks a checkbox.
     handleCheckedChange(event) {
         const name = event.target.name
         var userForm = this.state.userForm;
@@ -58,6 +65,7 @@ class UserForm extends React.Component {
         this.setState({ userForm: userForm });
     }
 
+    // Handles the submission of the form. Form field validation is checked before submitting.
     handleSubmit() {
         // Check if form is filled out correctly before submitting form.
         if (this.isFormFilledOutProperly()) {
@@ -71,6 +79,7 @@ class UserForm extends React.Component {
         }
     }
 
+    // Shows the form fields and displays info icons next to potentially unclear sports.
     render() {
         var { userForm } = this.state;
         return (

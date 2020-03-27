@@ -1,3 +1,5 @@
+// Handles Google account login and fetching calendar events.
+
 import React from 'react';
 import ApiCalendar from 'react-google-calendar-api';
 
@@ -44,7 +46,6 @@ export default class SignInButton extends React.Component {
         this.setState({
             isSignedIn
         }, () => this.getEvents())
-
     }
 
     // Screen to prompt user to sign in to their Google Account.

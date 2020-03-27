@@ -1,3 +1,5 @@
+// Uses user input to generate and display the result page.
+
 import React from 'react';
 import SignInButton from './googleCalendar';
 import * as d3 from "d3";
@@ -7,6 +9,7 @@ import _ from "lodash";
 import moment from 'moment';
 import Collapsible from 'react-collapsible';
 
+// Mapping of the state values to their respective formatted Calendar title output.
 const sportMapping = {
     "Swimming": "swimming",
     "CIF Fitness": "cifGym",
